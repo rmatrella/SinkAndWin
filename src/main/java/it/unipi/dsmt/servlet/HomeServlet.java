@@ -23,6 +23,7 @@ public class HomeServlet extends HttpServlet {
         String password = request.getParameter("password");
         System.out.println("username: " + username + "\npassword: " + password);
         response.setContentType("text/html");
+        KeyValueDB db = KeyValueDB.getInstance();
 
         HttpSession session = request.getSession();
 
@@ -30,8 +31,8 @@ public class HomeServlet extends HttpServlet {
         if(request.getParameter("loginButton") != null)
         {
             System.out.println("doPost Login");
-            User user = KeyValueDB.getInstance().isLogin(username, password);
-            System.out.println("username trovato:" + user);
+            User user = db.isLogin(username, password);
+            System.out.println("username trovato:" + user.getUsername());
 
             if(user == null)
             {
@@ -45,10 +46,26 @@ public class HomeServlet extends HttpServlet {
             else
             {
                  session.setAttribute("logUser", user);
-                 Utils.goTo("game.jsp", request, response);
+                 //Utils.goTo("index.jsp", request, response);
+
+                Utils.goTo("pages/game.jsp", request, response);
             }
         }else{ //registration part
-
+            if(db.usernameAlreadyUsed(username))
+            {
+                PrintWriter out = response.getWriter();
+                out.println("<script type=\"text/javascript\">");
+                out.println("alert('Username already used, change it and try again!');");
+                out.println("document.location.href='./index.jsp';");
+                out.println("</script>");
+                out.close();
+            }
+            else
+            {
+                db.registerUser(username, password);
+                session.setAttribute("logUser", username);
+                Utils.goTo("index.jsp", request, response);
+            }
         }
 
     }

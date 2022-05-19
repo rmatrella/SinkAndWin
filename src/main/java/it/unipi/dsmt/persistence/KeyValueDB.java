@@ -74,14 +74,13 @@ public class KeyValueDB {
         String pwd = null;
 
         String userExists = get(username);
-        if(userExists != null) {
-            pwd = getValue("user:" + username + ":password");
+        System.out.println("USER: " + userExists);
+        pwd = getValue("user:" + username + ":password");
 
-            if (pwd != null && pwd.equals(password)) {
-                user = new User(username, password);
-            }
+        if (pwd != null && pwd.equals(password)) {
+            user = new User(username, password);
         }
-
+        System.out.println("UTENTE: " + user.getUsername());
         return user;
     }
 

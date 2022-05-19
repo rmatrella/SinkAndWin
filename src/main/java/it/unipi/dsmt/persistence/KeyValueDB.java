@@ -71,7 +71,7 @@ public class KeyValueDB {
 
     public User isLogin(String username, String password) {
         User user = null;
-        String pwd = null;
+        String pwd;
 
         String userExists = get(username);
         System.out.println("USER: " + userExists);

@@ -1,0 +1,187 @@
+/* REGOLE PER TAG */
+
+body {
+    margin: 0;
+    box-sizing: border-box;
+    background-image: url("../images/background_fhd.jpg");
+    /* TODO: controllare dimensione schermo con js per impostare bg adeguato */
+}
+
+h1 {
+    color: black;
+    font-family: impact;
+    letter-spacing: 1px;
+    margin: 5px 0px 0px 0px;
+}
+
+h3 {
+    font-family: verdana, arial;
+    margin: 10px 0;
+}
+
+h4 {
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+table {
+    border-collapse: collapse;
+    margin: 0 10px;
+}
+
+table td {
+    padding: 15px;
+    border: 1px solid black;
+}
+
+/* REGOLE PER CLASSI GENERICHE */
+
+.center {
+    text-align: center;
+}
+
+
+.blackshadow {
+    /* text-shadow: 2px 2px 4px black; */
+}
+
+
+/* REGOLE ASSOCIATE AI DIFFERENTI CONTENITORI */
+
+#container {
+    /*  border: 2px solid blue; */
+    padding: 10px 0;
+}
+
+#title {
+    /*  border: solid green; */
+    /*  background-image: url("./images/background.jpg"); */
+}
+
+#player {
+    /*  border: solid blue; */
+    text-align: center;
+}
+
+#grids {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+#console {
+    min-width: 315px;
+    margin: 0 auto;
+    border: solid gray;
+    background: black;
+    /*  height: 50px; */
+    width: 50%;
+    text-align: center;
+}
+
+#hit_message_div {
+    width: 40%;
+    opacity: 0.8;
+    padding: 15px 10px;
+    margin: 10px auto;
+}
+/* GRIGLIE */
+
+/* Per gestire le celle della griglia in miniatura */
+.miniature td {
+    padding: 8px;
+}
+
+/* Per gestire le griglie affiancate */
+#grid0, #grid1, #grid2 {
+    display: inline-block;
+    margin: 5px 0;
+}
+
+/* Classi per colorare le celle:
+bianche -> vuote
+grigie -> nave presente
+rosse -> nave colpita
+*/
+.empty, .unknown {
+    background-color: white;
+}
+
+.ship {
+    background-color: lightgray;
+}
+
+.hit {
+    background-color: red;
+}
+
+.missed {
+    background-color: lightblue;
+}
+
+
+/* CONSOLE */
+
+p.console {
+    color: lightgray;
+    padding: 10px 10px 0 10px;
+    font-family: "Lucida Console", "Lucida Sans Typewriter", monaco, "Bitstream Vera Sans Mono", monospace;
+    font-size: 90%;
+    /*  border: 1px solid white; */
+    margin:0;
+}
+
+table.console, table.console tr, table.console th, table.console td, div.console{
+    border: 2px dashed lightgray;
+    color: lightgray;
+    border-collapse: collapse;
+    font-family: "Lucida Console", "Lucida Sans Typewriter", monaco, "Bitstream Vera Sans Mono", monospace;
+    text-align: center;
+    padding: 10px;
+    font-size: 95%;
+
+}
+
+div.console{
+    background-color: black;
+}
+
+table.console {
+    margin: 15px auto;
+    width: 50%;
+}
+
+
+/* BOTTONI */
+
+.buttons {
+    /*  border: solid orange; */
+    text-align:center;
+    margin-top: 20px;
+}
+
+a.button {
+    width: 80px;
+    background: red;
+    border: 1px solid red;
+    border-radius: 3px;
+    color: white;
+    display: inline-block;
+    text-decoration: none;
+    padding: 5px 10px;
+    font-family: impact;
+    letter-spacing: 2px;
+}
+
+a:hover.button {
+    background: white;
+    border: 1px solid red;
+    color: red;
+}
+
+.inBlock {
+    display: inline-block;
+}
+
+#hit_message_button {
+    margin: 20px;
+}

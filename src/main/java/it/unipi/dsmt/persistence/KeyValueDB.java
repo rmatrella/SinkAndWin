@@ -5,6 +5,7 @@ import java.io.IOException;
 
 import it.unipi.dsmt.dto.User;
 import org.iq80.leveldb.*;
+
 import static org.iq80.leveldb.impl.Iq80DBFactory.*;
 
 public class KeyValueDB {
@@ -14,7 +15,7 @@ public class KeyValueDB {
     public DB db;
 
     private KeyValueDB(){
-        this("/database");
+        this("../database\n");
     }
 
     private KeyValueDB(String path) {

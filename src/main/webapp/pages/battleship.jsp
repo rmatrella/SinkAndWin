@@ -10,9 +10,9 @@
 <html lang="eng">
 <head>
     <title>Battleship</title>
-    <link rel="stylesheet" type="text/css" href="./css/style.css">
+    <link rel="stylesheet" type="text/css" href="../css/game.css">
     <meta charset="utf-8" />
-    <script type="text/javascript" src="./js/code.js"></script> <!-- Viene richiamato il file con il codice Javascript -->
+    <script type="text/javascript" src="../js/game.js"></script> <!-- Viene richiamato il file con il codice Javascript -->
 </head>
 
 <body>

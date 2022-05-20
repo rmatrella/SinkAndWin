@@ -105,7 +105,6 @@ function drawTable(mode) {
             switch (mode) {
                 // disegna la griglia per il posizionamento delle navi
                 case 0:
-                    cell.setAttribute("onClick", "setShip(this, "+id+")");
                     if (active_grid[cell_number] === 0)
                         cell.setAttribute("class", "empty");
                     else if (active_grid[cell_number] === 1)
@@ -116,7 +115,6 @@ function drawTable(mode) {
                         cell.setAttribute("class", "missed");
                     break;
                 case 1:
-                    cell.setAttribute("onClick", "setShip(this)");
                     if (active_grid[cell_number] === 0)
                         cell.setAttribute("class", "empty");
                     else if (active_grid[cell_number] === 1)

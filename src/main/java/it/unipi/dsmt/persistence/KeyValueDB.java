@@ -80,7 +80,6 @@ public class KeyValueDB {
         if (pwd != null && pwd.equals(password)) {
             user = new User(username, password);
         }
-        System.out.println("UTENTE: " + user.getUsername());
         return user;
     }
 

@@ -14,7 +14,7 @@ import java.io.PrintWriter;
 public class HomeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
+        System.out.println("doGet");
     }
 
     @Override
@@ -32,23 +32,24 @@ public class HomeServlet extends HttpServlet {
         {
             System.out.println("doPost Login");
             User user = db.isLogin(username, password);
-            System.out.println("username trovato:" + user.getUsername());
 
             if(user == null)
             {
                 PrintWriter out = response.getWriter();
                 out.println("<script type=\"text/javascript\">");
-                out.println("alert('Something wrong. Check if your username and password are correct!');");
+                out.println("alert('Username or password wrong, please try again!');");
                 out.println("document.location.href='./index.jsp';");
                 out.println("</script>");
                 out.close();
+                /*request.getSession().setAttribute("loginError", "Username or password wrong, please try again!");
+                request.getRequestDispatcher("./index.jsp").include(request, response);*/
+
             }
             else
             {
                  session.setAttribute("logUser", user);
                  //Utils.goTo("index.jsp", request, response);
-
-                Utils.goTo("pages/game.jsp", request, response);
+                Utils.goTo("pages/chooseOpponent.jsp", request, response);
             }
         }else{ //registration part
             if(db.usernameAlreadyUsed(username))

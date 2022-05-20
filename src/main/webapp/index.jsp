@@ -11,15 +11,6 @@
 
 <h1 class="center-text">Welcome to SinkAndWin!</h1>
 
-<%
-    if(request.getParameter("loginError") != null)
-    {
-        out.println("<script type=\"text/javascript\">");
-        out.println("alert('Errore');");
-        out.println("</script>");
-    }
-%>
-
 <div class="divFifty">
     <form action="HomeServlet" class="formStyle" method="post">
         <div class="imgcontainer">

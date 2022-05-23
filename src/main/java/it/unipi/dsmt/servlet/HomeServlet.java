@@ -49,7 +49,7 @@ public class HomeServlet extends HttpServlet {
             {
                  session.setAttribute("logUser", user);
                  //Utils.goTo("index.jsp", request, response);
-                Utils.goTo("pages/chooseOpponent.jsp", request, response);
+                Utils.goTo("chooseOpponent.jsp", request, response);
             }
         }else{ //registration part
             if(db.usernameAlreadyUsed(username))
@@ -63,6 +63,12 @@ public class HomeServlet extends HttpServlet {
             }
             else
             {
+                PrintWriter out = response.getWriter();
+                out.println("<script type=\"text/javascript\">");
+                out.println("alert('Registration done, login to join the game!');");
+                out.println("document.location.href='./index.jsp';");
+                out.println("</script>");
+                out.close();
                 db.registerUser(username, password);
                 session.setAttribute("logUser", username);
                 Utils.goTo("index.jsp", request, response);

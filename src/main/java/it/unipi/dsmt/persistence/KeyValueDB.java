@@ -98,6 +98,7 @@ public class KeyValueDB {
     public void registerUser(String username, String password){
 
         putValue("user:" + username + ":password", password);
+        putValue("user:" + username + ":points", "0");
     }
 }
 

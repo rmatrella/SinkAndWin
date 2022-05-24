@@ -24,8 +24,8 @@
             <label for="password"><b>Password</b></label>
             <input type="password" placeholder="Enter Password" id="password" name="password" required>
 
-            <button type="submit" name="loginButton">Login</button>
-            <button type="submit" name="registerButton"> Register</button>
+            <button type="submit" name="loginButton" class="indexButton">Login</button>
+            <button type="submit" name="registerButton" class="indexButton"> Register</button>
         </div>
     </form>
 </div>

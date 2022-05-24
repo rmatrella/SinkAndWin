@@ -9,9 +9,10 @@
 <html>
 <head>
     <title>Play game</title>
-    <link href="./css/chooseOpponent.css" rel="stylesheet" type="text/css"/>
+    <link href="css/chooseOpponent.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
+<script src="js/websocket.js"></script>
 <h2 class="center-text"> Welcome
 <%
     out.println(((User)session.getAttribute("logUser")).getUsername());
@@ -30,6 +31,9 @@
                                <span>Status</span>
                            </th>
                            <th class="text-center">
+                               <span>Points</span>
+                           </th>
+                           <th class="text-center">
                                <span>Send Request</span>
                            </th>
                        </tr>
@@ -46,6 +50,9 @@
                                <span class="label label-default"><img src="./images/online-icon.png" class="icon">Online</span>
                             </td>
                            <td>
+                               100
+                           </td>
+                           <td>
                                <button type="button" value="sendRequest" class="sendRequest"> Send Request</button>
                            </td>
 
@@ -54,6 +61,12 @@
                    </tbody>
                </table>
    </div>
+    <div class="search-container">
+        <form action="FindOpponentServlet">
+            <input type="text" placeholder="Search.." name="search">
+            <button type="submit"><img src="./images/search.png" id="search"></button>
+        </form>
+    </div>
 </div>
 </body>
 </html>

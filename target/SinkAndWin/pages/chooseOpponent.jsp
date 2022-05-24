@@ -9,10 +9,9 @@
 <html>
 <head>
     <title>Play game</title>
-    <link href="./css/chooseOpponent.css" rel="stylesheet" type="text/css"/>
+    <link href="../css/chooseOpponent.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-<script src="js/websocket.js"></script>
 <h2 class="center-text"> Welcome
 <%
     out.println(((User)session.getAttribute("logUser")).getUsername());
@@ -20,7 +19,7 @@
 </h2>
 <h3 class="center"> Choose an opponent! </h3>
 <div id="snippetContent">
-    <div class="containerTable">
+   <div class="containerTable">
                <table class="table user-list">
                    <thead>
                        <tr>
@@ -44,7 +43,7 @@
                                Mila Kunis
                            </td>
                            <td>
-                               <span class="label label-default"><img src="./images/online-icon.png" class="icon">Online</span>
+                               <span class="label label-default"><img src="../images/online-icon.png" class="icon">Online</span>
                             </td>
                            <td>
                                <button type="button" value="sendRequest" class="sendRequest"> Send Request</button>

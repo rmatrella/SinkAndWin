@@ -29,7 +29,7 @@ function initWebSocket() {
     };
 }
 
-waitForSocketConnection(ws, registerUser);
+//waitForSocketConnection(ws, registerUser);
 
 function registerUser () {
     var username = document.getElementById("loggedUsername").textContent;

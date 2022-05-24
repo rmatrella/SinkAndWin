@@ -6,6 +6,6 @@
               {applications,[kernel,stdlib,cowboy]},
               {env,[]},
               {modules,[online_users,server_erlang_app,server_erlang_handler,
-                        server_erlang_sup]},
+                        server_erlang_sup,web_server]},
               {licenses,["Apache 2.0"]},
               {links,[]}]}.

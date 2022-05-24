@@ -13,10 +13,10 @@
 </head>
 <body>
 <script src="js/websocket.js"></script>
-<script src="js/requests.js"></script>
 <h2 class="center-text"> Welcome
-    <span id="loggedUsername"><%
-        out.print(((User)session.getAttribute("logUser")).getUsername());%></span>!
+<%
+    out.println(((User)session.getAttribute("logUser")).getUsername());
+%> !
 </h2>
 <h3 class="center"> Choose an opponent! </h3>
 <div id="snippetContent">

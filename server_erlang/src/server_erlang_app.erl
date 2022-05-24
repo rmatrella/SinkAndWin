@@ -17,7 +17,7 @@ start(_StartType, _StartArgs) ->
 		[{port, 8090}], 
 		#{env => #{dispatch => Dispatch}}
 	),
-	%% online_users:init_main(),
+	%%online_users:init_main(),
 	server_erlang_sup:start_link().
 
 stop(_State) ->

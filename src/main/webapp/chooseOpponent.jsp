@@ -13,15 +13,15 @@
 </head>
 <body>
 <script src="js/websocket.js"></script>
+<script src="js/request.js"></script>
 <h2 class="center-text"> Welcome
-<%
-    out.println(((User)session.getAttribute("logUser")).getUsername());
-%> !
+    <span id="loggedUsername"><%
+        out.print(((User)session.getAttribute("logUser")).getUsername());%></span>!
 </h2>
-<h3 class="center"> Choose an opponent! </h3>
 <div id="snippetContent">
    <div class="containerTable">
-               <table class="table user-list">
+       <h3 class="center"> Choose an opponent! </h3>
+               <table class="table">
                    <thead>
                        <tr>
                            <th>
@@ -39,7 +39,7 @@
                        </tr>
                        </thead>
                        <tbody style="background: #9daccb;">
-                       <% for(int i = 0; i < 10; i++)
+                       <% for(int i = 0; i < 5; i++)
                        {
                        %>
                        <tr>
@@ -53,7 +53,7 @@
                                100
                            </td>
                            <td>
-                               <button type="button" value="sendRequest" class="sendRequest"> Send Request</button>
+                               <button type="button" value="sendRequest" class="buttonRequest"> Send Request</button>
                            </td>
 
                        </tr>
@@ -66,6 +66,41 @@
             <input type="text" placeholder="Search.." name="search">
             <button type="submit"><img src="./images/search.png" id="search"></button>
         </form>
+    </div>
+    <div class="containerTable">
+        <h3 class="center"> Game requests</h3>
+        <table class="table" id="request_table">
+            <thead>
+            <tr>
+                <th>
+                    <span>User</span>
+                </th>
+                <th>
+                    <span>Points</span>
+                </th>
+                <th>
+                    <span>Accept Request</span>
+                </th>
+            </tr>
+            </thead>
+            <tbody style="background: #9daccb;">
+            <% for(int j = 0; j < 2; j++)
+            {
+            %>
+            <tr>
+                <td class="center">
+                    Mila Kunis
+                </td>
+                <td class="center">
+                    50
+                </td>
+                <td class="center">
+                    <button type="button" value="acceptRequest" class="buttonRequest"> Accept Request</button>
+                </td>
+            </tr>
+            <% } %>
+            </tbody>
+        </table>
     </div>
 </div>
 </body>

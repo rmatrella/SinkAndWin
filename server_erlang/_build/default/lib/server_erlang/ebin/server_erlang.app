@@ -1,0 +1,11 @@
+{application,server_erlang,
+             [{description,"An OTP application"},
+              {vsn,"0.1.0"},
+              {registered,[]},
+              {mod,{server_erlang_app,[]}},
+              {applications,[kernel,stdlib,cowboy]},
+              {env,[]},
+              {modules,[online_users,server_erlang_app,server_erlang_handler,
+                        server_erlang_sup]},
+              {licenses,["Apache 2.0"]},
+              {links,[]}]}.

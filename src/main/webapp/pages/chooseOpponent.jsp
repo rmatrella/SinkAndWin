@@ -12,6 +12,7 @@
     <link href="./css/chooseOpponent.css" rel="stylesheet" type="text/css"/>
 </head>
 <body>
+<script src="js/websocket.js"></script>
 <h2 class="center-text"> Welcome
 <%
     out.println(((User)session.getAttribute("logUser")).getUsername());
@@ -19,7 +20,7 @@
 </h2>
 <h3 class="center"> Choose an opponent! </h3>
 <div id="snippetContent">
-   <div class="containerTable">
+    <div class="containerTable">
                <table class="table user-list">
                    <thead>
                        <tr>

@@ -1,4 +1,11 @@
-
+class Message {
+    constructor(type, data, sender, receiver) {
+        this.type = type; // Type of the message, explain the content of the message (or type of error)
+        this.data = data; // Data contained in the message, can be an object
+        this.sender = sender; // username of sender
+        this.receiver = receiver; // username of receiver
+    }
+}
 
 
 // Create WebSocket connection.
@@ -29,13 +36,6 @@ function initWebSocket() {
     };
 }
 
-//waitForSocketConnection(ws, registerUser);
-
-function registerUser () {
-    var username = document.getElementById("loggedUsername").textContent;
-    sendWebSocket(JSON.stringify(new Request(username, "WebSocket", "register_me", "")));
-}
-
 function waitForSocketConnection(socket, callback){
     setTimeout(
         function () {
@@ -63,7 +63,7 @@ ws.onerror = function(event) {
  */
 function sendWebSocket(message) {
     ws.send(message);
-    console.log('Message sent');
+    console.log('Message sent:' + message);
 }
 
 

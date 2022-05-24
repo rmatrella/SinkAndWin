@@ -1,0 +1,49 @@
+
+.center-text{
+    font-size: 25px;
+    color: royalblue;
+    text-align: center;
+}
+input[type=text], input[type=password] {
+    width: 40%;
+    padding: 12px 20px;
+    margin: 8px 56% 0 0;
+    display: inline-block;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+.indexButton {
+    background-color: royalblue;
+    color: white;
+    padding: 10px 20px;
+    margin: 8px 56% 0 0;
+    border: none;
+    cursor: pointer;
+    width: 40%;
+    border-radius: 10px;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+.imgcontainer {
+    text-align: center;
+    margin: 24px 0 12px 0;
+}
+
+img.icon {
+    width: 40%;
+    border-radius: 50%;
+}
+
+.container {
+    padding: 16px;
+    margin-left: 37%;
+}
+
+#registration{
+    color: royalblue;
+    padding: 2% 5%;
+}

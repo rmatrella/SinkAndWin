@@ -13,13 +13,14 @@
 -export([init_main/0]).
 
 init_main() ->
-  online_users:start_server(),
+  %% online_users:start_server(),
   io:fwrite("Server starts \n"),
   Server = spawn(fun()-> main_loop([]) end),
   register(sinkandwin_server, Server),
   io:fwrite("Server registered \n").
 
 main_loop(OnlineUsersList) ->
+  io:fwrite("Main loop started \n"),
   receive
     {addUser, Username} ->
         notify_all({addUser,Username}, OnlineUsersList),
@@ -40,6 +41,7 @@ main_loop(OnlineUsersList) ->
   end,
   main_loop(OnlineUsersList).
 
+
 notify_all([], _) ->
   ok;
 
@@ -53,3 +55,4 @@ notify_all({delUser,CurrentUser}, [First | Others]) ->
 
 notify_one(Username, UsersList) ->
     whereis(Username) ! jsx:encode(#{<<"type">> => <<"get_onlie_users">>, <<"data">> => <<"UsersList">>}).
+

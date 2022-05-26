@@ -1,4 +1,4 @@
-%%%-------------------------------------------------------------------
+ %%%-------------------------------------------------------------------
 %%% @author matre
 %%% @copyright (C) 2022, <COMPANY>
 %%% @doc
@@ -9,7 +9,6 @@
 -module(web_server).
 -author("matrella").
 
-%% API
 -export([init/2, websocket_init/1, websocket_handle/2, websocket_info/2, terminate/3]).
 
 %% called when the request is received
@@ -23,38 +22,56 @@ websocket_init(State) ->
   {[{text, <<"Web socket server connection success">>}], State}.
 
 websocket_handle({text, Frame}, State) ->
-  io:format("Frame receivd: ~p\n", [Frame]),
+  io:format("Frame received: ~p\n", [Frame]),
   Json = jsx:decode(Frame, [return_maps]),
   Sender = binary_to_atom(maps:get(<<"sender">>, Json)),
   Receiver = binary_to_atom(maps:get(<<"receiver">>, Json)),
   Type = binary_to_atom(maps:get(<<"type">>, Json)),
   case Type of
-    %% register_me is called when a new user logged in.
-    %% The websocket correlated to the user is registered
-    %% with the same name of the user (uniqueness).
-    %% The online users list is sent as answer.
-    %% If the user is already register the websocket
-    %% return an error.
-    register_me ->
-      Check = whereis(Sender),
+    user_registration ->
+      SenderPID = whereis(Sender),
       if
-        Check =/= undefined -> %% user already logged in
+        SenderPID =/= undefined -> %% user already logged in
           Response = jsx:encode(#{<<"type">> => <<"error">>,
             <<"sender">> => <<"WebSocket">>,
-            <<"text">> => <<"User already logged!">>}),
+            <<"data">> => <<"User already logged!">>}),
           NewState = State;
         true ->
           register(Sender, self()),
-          fastdoku_server ! {self(), get},
+          sinkandwin_server ! {getUser, Sender},
+          sinkandwin_server ! {addUser, Sender},
           Response = jsx:encode(#{<<"type">> => <<"info">>,
             <<"sender">> => <<"WebSocket">>,
-            <<"text">> => <<"Now you are online!">>}),
+            <<"data">> => <<"Now you are online!">>}),
           NewState = State
-      end
+      end;
+    add_online ->
+      PID = process_info(self(), registered_name),
+      if
+        PID == [] -> %% this means that the process is not registered, so the user is not logged in
+          Response = jsx:encode(#{<<"type">> => <<"error">>,
+            <<"sender">> => <<"WebSocket">>,
+            <<"data">> => <<"User not logged!">>}),
+
+          NewState = State;
+        true ->
+          Name = element(2, PID),
+          sinkandwin_server ! {addUser, Name},
+          Response = jsx:encode(#{<<"type">> => <<"info">>,
+            <<"sender">> => <<"WebSocket">>,
+            <<"data">> => <<"Now you are online!">>}),
+          NewState = State
+      end;
+    _ ->
+      NewState = State,
+      Response = jsx:encode(#{<<"type">> => <<"nothing">>,
+        <<"sender">> => <<"WebSocket">>,
+        <<"data">> => <<"">>})
   end,
   {[{text, Response}], NewState};
 
 websocket_handle (_, State) -> {ok, State}.
+
 
 %% The websocket_info/2 callback is called when we use the ! operator
 %% So Cowboy will call websocket_info/2 whenever an Erlang message arrives.
@@ -64,7 +81,6 @@ websocket_info (stop, State) ->
 websocket_info(close, State) ->
   {[{close, 1000, <<"some-reason">>}], State};
 
-%% This function can be used to send a message Info to this process by another process
 websocket_info(Info, State) ->
   {[{text, Info}], State}. %% Returns this message to the client
 
@@ -73,31 +89,12 @@ websocket_info(Info, State) ->
 %% The most common reasons are stop and remote
 %% stop -> The server close the connection
 %% remote -> The client close the connection
-terminate (TerminateReason, _Req, {opponent, Username}) ->
-  io:format("Disconnected: ~p\n", [self()]),
-  io:format("Terminate reason: ~p\n", [TerminateReason]),
-  OpponentPID = whereis(Username),
-  if
-    OpponentPID =/= undefined -> %% The opponent is not already disconnected
-      OpponentPID ! jsx:encode(#{<<"type">> => <<"opponent_disconnected">>,
-        <<"sender">> => <<"WebSocket">>,
-        <<"text">> => <<"The opponent has left the game!">>});
-    true ->
-      ok
-  end;
+
 
 terminate (TerminateReason, _Req, {error, Msg}) ->
   io:format("Terminate reason: ~p\n", [TerminateReason]),
   io:format("*** Error: ~p\n", [Msg]);
 
-terminate (TerminateReason, _Req, {surrender}) ->
-  io:format("Surrender: ~p\n", [self()]),
-  io:format("Terminate reason: ~p\n", [TerminateReason]);
-
-terminate (TerminateReason, _Req, {busy}) ->
-  Username = element(2, erlang:process_info(self(), registered_name)),
-  fastdoku_server ! {remove, Username},
-  io:format("Terminate reason: ~p\n", [TerminateReason]);
 
 terminate (TerminateReason, _Req, {}) ->
   Username = element(2, erlang:process_info(self(), registered_name)),

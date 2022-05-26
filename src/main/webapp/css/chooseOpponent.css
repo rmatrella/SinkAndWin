@@ -60,8 +60,9 @@ img.icon {
 .search-container{
     position:relative;
     left: 25px;
+    top: 25px;
     width: 90%;
-    width: 90%;
+
 }
 
 #request_table{

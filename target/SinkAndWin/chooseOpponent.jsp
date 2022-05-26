@@ -38,13 +38,13 @@
                            </th>
                        </tr>
                        </thead>
-                       <tbody id="onlineUsers" style="background: #9daccb;">
-                       <tr id="emptyRow">
-                           <td></td>
-                           <td></td>
-                           <td></td>
-                           <td></td>
-                       </tr>
+                   <tbody id="onlineUsers" style="background: #9daccb;">
+                   <tr id="emptyRow">
+                       <td></td>
+                       <td></td>
+                       <td></td>
+                       <td></td>
+                   </tr>
                    </tbody>
                </table>
    </div>
@@ -55,7 +55,7 @@
         </form>
     </div>
     <div class="containerTable">
-        <h3 class="center"> Game requests</h3>
+        <h3 class="center" style="margin-left:165px"> Game requests</h3>
         <table class="table" id="request_table">
             <thead>
             <tr>

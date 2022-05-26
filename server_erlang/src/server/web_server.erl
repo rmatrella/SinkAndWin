@@ -1,4 +1,4 @@
- %%%-------------------------------------------------------------------
+%%%-------------------------------------------------------------------
 %%% @author matre
 %%% @copyright (C) 2022, <COMPANY>
 %%% @doc
@@ -9,6 +9,7 @@
 -module(web_server).
 -author("matrella").
 
+%% API
 -export([init/2, websocket_init/1, websocket_handle/2, websocket_info/2, terminate/3]).
 
 %% called when the request is received
@@ -98,7 +99,7 @@ terminate (TerminateReason, _Req, {error, Msg}) ->
 
 terminate (TerminateReason, _Req, {}) ->
   Username = element(2, erlang:process_info(self(), registered_name)),
-  fastdoku_server ! {remove, Username},
+  sinkandwin_server ! {remove, Username},
   io:format("Terminate reason: ~p\n", [TerminateReason]),
   io:format("Terminate with empty state ~n").
 

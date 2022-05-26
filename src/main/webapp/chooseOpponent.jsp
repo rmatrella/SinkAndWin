@@ -13,7 +13,7 @@
 </head>
 <body>
 <script src="js/websocket.js"></script>
-<script src="js/request.js"></script>
+<script src="js/requests.js"></script>
 <h2 class="center-text"> Welcome
     <span id="loggedUsername"><%
         out.print(((User)session.getAttribute("logUser")).getUsername());%></span>!
@@ -38,26 +38,13 @@
                            </th>
                        </tr>
                        </thead>
-                       <tbody style="background: #9daccb;">
-                       <% for(int i = 0; i < 5; i++)
-                       {
-                       %>
-                       <tr>
-                           <td>
-                               Mila Kunis
-                           </td>
-                           <td>
-                               <span class="label label-default"><img src="./images/online-icon.png" class="icon">Online</span>
-                            </td>
-                           <td>
-                               100
-                           </td>
-                           <td>
-                               <button type="button" value="sendRequest" class="buttonRequest"> Send Request</button>
-                           </td>
-
-                       </tr>
-                   <% } %>
+                   <tbody id="onlineUsers" style="background: #9daccb;">
+                   <tr id="emptyRow">
+                       <td></td>
+                       <td></td>
+                       <td></td>
+                       <td></td>
+                   </tr>
                    </tbody>
                </table>
    </div>
@@ -68,7 +55,7 @@
         </form>
     </div>
     <div class="containerTable">
-        <h3 class="center"> Game requests</h3>
+        <h3 class="center" style="margin-left:165px"> Game requests</h3>
         <table class="table" id="request_table">
             <thead>
             <tr>

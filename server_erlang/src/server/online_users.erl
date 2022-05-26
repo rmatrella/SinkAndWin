@@ -23,12 +23,13 @@ main_loop(OnlineUsersList) ->
   io:fwrite("Main loop started \n"),
   receive
     {addUser, Username} ->
-        notify_all({addUser,Username}, OnlineUsersList),
+      io:format("addUser : ~p\n", [Username]),
+        notify_all({addUser, Username}, OnlineUsersList),
         NewListUsers = OnlineUsersList ++ [Username],
-        %%%NewListUsers = online_users:add_users(Username),
         io:format("Online users : ~p\n", [NewListUsers]),
         main_loop(NewListUsers);
     {getUser, Username} ->
+        io:format("getUser : ~p\n", [Username]),
         notify_one(Username, OnlineUsersList),
         io:format("Online users : ~p\n", [OnlineUsersList]),
         main_loop(OnlineUsersList);
@@ -42,17 +43,18 @@ main_loop(OnlineUsersList) ->
   main_loop(OnlineUsersList).
 
 
-notify_all([], _) ->
+notify_all(_, []) ->
   ok;
 
 notify_all({addUser,CurrentUser}, [First | Others]) ->
-    whereis(First) ! jsx:encode(#{<<"type">> => <<"add_user">>,<<"data">> => <<"CurrentUser">>}),
-    notify_all({add, CurrentUser}, Others);
+    whereis(First) ! jsx:encode(#{<<"type">> => <<"add_user">>,<<"data">> => CurrentUser}),
+    notify_all({addUser, CurrentUser}, Others);
 
 notify_all({delUser,CurrentUser}, [First | Others]) ->
-    whereis(First) ! jsx:encode(#{<<"type">> => <<"del_user">>,<<"data">> => <<"CurrentUser">>}),
-    notify_all({add, CurrentUser}, Others).
+    whereis(First) ! jsx:encode(#{<<"type">> => <<"delete_user">>,<<"data">> => CurrentUser}),
+    notify_all({delUser, CurrentUser}, Others).
 
 notify_one(Username, UsersList) ->
-    whereis(Username) ! jsx:encode(#{<<"type">> => <<"get_onlie_users">>, <<"data">> => <<"UsersList">>}).
+    io:fwrite("First: ~p~n", [Username]),
+    whereis(Username) ! jsx:encode(#{<<"type">> => <<"user_list">>, <<"data">> => UsersList}).
 

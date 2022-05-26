@@ -4,12 +4,13 @@
 %%%-------------------------------------------------------------------
 
 -module(server_erlang_app).
-
+-import('online_users', [init_main/0]).
 -behaviour(application).
 
 -export([start/2, stop/1]).
 
 start(_StartType, _StartArgs) ->
+	online_users:init_main(),
 	Dispatch = cowboy_router:compile([
 		{'_', [{"/ws", web_server, []}]}
 	]),

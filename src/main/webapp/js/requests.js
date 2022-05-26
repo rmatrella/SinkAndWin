@@ -5,6 +5,11 @@ function registerUser () {
     sendWebSocket(JSON.stringify(new Message( "user_registration", "",username, "WebSocket",)));
 }
 
+function logoutUser(){
+    var username = document.getElementById("loggedUsername").textContent;
+    sendWebSocket(JSON.stringify(new Message( "user_logout", "",username, "WebSocket",)));
+}
+
 
 ws.onmessage = function (event) {
     console.log("message received: "+ event.data);
@@ -48,8 +53,7 @@ function addUsersTable(usersList) {
     let table_body = document.getElementById("onlineUsers");
     let empty_row = document.getElementById("emptyRow");
 
-
-    for(let i = 0; i < data.length; i++) {
+    for(let i = 0; i < usersList.length; i++) {
         empty_row.remove();
         let tr = document.createElement('tr');
         let td_username = tr.appendChild(document.createElement('td'));
@@ -68,9 +72,9 @@ function addUsersTable(usersList) {
 
         td_status.innerHTML = "Online";
         button.innerHTML = "Send Request";
-        td_username.innerHTML = data[i];
+        td_username.innerHTML = usersList[i];
         td_score.innerHTML = "0";
         table_body.appendChild(tr);
-        console.log(data[i]+"\n");
+        console.log(usersList[i]+"\n");
     }
 }

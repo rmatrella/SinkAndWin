@@ -85,22 +85,13 @@ websocket_info(close, State) ->
 websocket_info(Info, State) ->
   {[{text, Info}], State}. %% Returns this message to the client
 
-%% terminate/3 is for handling the termination of the connection
-%% The first argument is the reason for the closing
-%% The most common reasons are stop and remote
-%% stop -> The server close the connection
-%% remote -> The client close the connection
 
-
-terminate (TerminateReason, _Req, {error, Msg}) ->
-  io:format("Terminate reason: ~p\n", [TerminateReason]),
-  io:format("*** Error: ~p\n", [Msg]);
-
-
-terminate (TerminateReason, _Req, {}) ->
+terminate ({remote,_,_}, _Req, _) ->
   Username = element(2, erlang:process_info(self(), registered_name)),
-  sinkandwin_server ! {remove, Username},
-  io:format("Terminate reason: ~p\n", [TerminateReason]),
-  io:format("Terminate with empty state ~n").
+  io:format("*** Connection with ~p closed\n", [Username]),
+  sinkandwin_server ! {delUser, Username};
 
-
+terminate (TerminateReason, _Req, _) ->
+  io:format("*** Termination: ~p\n", [TerminateReason]),
+  Username = element(2, erlang:process_info(self(), registered_name)),
+  io:format("*** Process: ~p\n", [Username]).

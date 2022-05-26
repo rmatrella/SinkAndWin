@@ -18,6 +18,7 @@
     <span id="loggedUsername"><%
         out.print(((User)session.getAttribute("logUser")).getUsername());%></span>!
 </h2>
+<a href="LogoutServlet"><button>Logout</button></a>
 <div id="snippetContent">
    <div class="containerTable">
        <h3 class="center"> Choose an opponent! </h3>

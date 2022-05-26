@@ -33,9 +33,9 @@ main_loop(OnlineUsersList) ->
       io:format("Online users : ~p\n", [OnlineUsersList]),
       main_loop(OnlineUsersList);
     {delUser, Username} ->
-      notify_all({delUser, Username}, OnlineUsersList),
       NewListUsers = lists:delete(Username, OnlineUsersList),
-      io:format("User ~n deleted\n ", Username),
+      notify_all({delUser, Username}, NewListUsers),
+      io:format("Online users : ~p\n", [NewListUsers]),
       main_loop(NewListUsers);
     _ -> ok
   end,
@@ -48,13 +48,13 @@ notify_all(_, []) ->
 notify_all({addUser,CurrentUser}, [First | Others]) ->
   whereis(First) ! jsx:encode(#{<<"type">> => <<"add_user">>,
     <<"sender">> => <<"WebSocket">>,
-    <<"data">> => <<"CurrentUser">>}),
+    <<"data">> => CurrentUser}),
   %%whereis(First) ! jsx:encode(#{<<"type">> => <<"add_user">>,<<"data">> => <<"CurrentUser">>}),
-  notify_all({add, CurrentUser}, Others);
+  notify_all({addUser, CurrentUser}, Others);
 
 notify_all({delUser,CurrentUser}, [First | Others]) ->
   whereis(First) ! jsx:encode(#{<<"type">> => <<"delete_user">>,<<"data">> => CurrentUser}),
-  notify_all({add, CurrentUser}, Others).
+  notify_all({addUser, CurrentUser}, Others).
 
 notify_one(Username, UsersList) ->
   whereis(Username) ! jsx:encode(#{<<"type">> => <<"user_list">>, <<"data">> => UsersList}).

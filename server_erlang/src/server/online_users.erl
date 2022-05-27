@@ -49,7 +49,6 @@ notify_all({addUser,CurrentUser}, [First | Others]) ->
   whereis(First) ! jsx:encode(#{<<"type">> => <<"add_user">>,
     <<"sender">> => <<"WebSocket">>,
     <<"data">> => CurrentUser}),
-  %%whereis(First) ! jsx:encode(#{<<"type">> => <<"add_user">>,<<"data">> => <<"CurrentUser">>}),
   notify_all({addUser, CurrentUser}, Others);
 
 notify_all({delUser,CurrentUser}, [First | Others]) ->

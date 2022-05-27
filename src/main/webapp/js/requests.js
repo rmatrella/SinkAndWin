@@ -1,17 +1,12 @@
-waitForSocketConnection(ws, registerUser);
+let online_users = new Array();
+let user_requests = new Array();
+let myself;
+let opponent;
 
 function registerUser () {
-    let username = document.getElementById("loggedUsername").textContent;
-    let points = document.getElementById("hidden").textContent;
-    console.log(JSON.stringify(new Message( "user_registration", points,username, "WebSocket")));
-    sendWebSocket(JSON.stringify(new Message( "user_registration", points,username, "WebSocket")));
+    myself = document.getElementById("loggedUsername").textContent;
+    sendWebSocket(JSON.stringify(new Message( "user_registration", "",myself, "WebSocket")));
 }
-
-function logoutUser(){
-    let username = document.getElementById("loggedUsername").textContent;
-    sendWebSocket(JSON.stringify(new Message( "user_logout", "",username, "WebSocket",)));
-}
-
 
 ws.onmessage = function (event) {
     console.log("message received: "+ event.data);
@@ -19,23 +14,39 @@ ws.onmessage = function (event) {
     let jsonString = JSON.parse(event.data);
     let type = jsonString.type;
     let data = jsonString.data;
-
-   console.log(type + "; " +  data);
+    let sender = jsonString.sender;
 
     switch (type){
         case "user_list":
-            console.log("user_list");
-            console.log("DATA: " + data[0]);
-            for(let i = 0; i < data.length/2 && i < 5; i++)
-                addUsersTable(data[i], 0);
+            for(let i=0; i<data.length; i++){
+                online_users.push(data[i]);
+                addUserTable(data[i]);
+            }
+            break;
+        case "add_user":
+            addUserTable(data);
+            break;
+        case "delete_user":
+            deleteUserTable(data);
             break;
 
-        case "add_user":
-            addUsersTable(data[0], data[1]);
+        case "send_request":
+            user_requests.push(sender);
+            addReqTable(sender);
+            break;
+
+        case "accept_request":
+            alert("request accepted by " + sender);
+            opponent = sender;
+            window.location.href = "../pages/battleship.jsp?opponent="+opponent;
             break;
 
         case "info":
             alert(data);
+            if(data == "Request correctly accepted!") {
+                opponent = sender;
+                window.location.href = "../pages/battleship.jsp?opponent="+opponent;
+            }
             break;
 
         case "error":
@@ -48,32 +59,76 @@ ws.onmessage = function (event) {
     }
 }
 
-function addUsersTable(username, points) {
-
+function addUserTable(user) {
     let table_body = document.getElementById("onlineUsers");
     let empty_row = document.getElementById("emptyRow");
-
-        console.log("USERS: " + username);
-
+    if(empty_row != null)
         empty_row.remove();
-        let tr = document.createElement('tr');
-        let td_username = tr.appendChild(document.createElement('td'));
-        let td_status = tr.appendChild(document.createElement('td'));
-        let td_score = tr.appendChild(document.createElement('td'));
-        let td_button = tr.appendChild(document.createElement('td'));
-        let button = td_button.appendChild(document.createElement("button"));
-        let span = td_status.appendChild(document.createElement("span"));
-        let img = span.appendChild(document.createElement("img"));
 
-        button.setAttribute("tye","button");
-        button.setAttribute("value","sendRequest");
-        button.setAttribute("class","buttonRequest");
-        img.setAttribute("src", "./images/online-icon.png");
-        img.setAttribute("className", "icon");
+    let tr = document.createElement('tr');
+    let td_username = tr.appendChild(document.createElement('td'));
+    let td_status = tr.appendChild(document.createElement('td'));
+    let td_score = tr.appendChild(document.createElement('td'));
+    let td_button = tr.appendChild(document.createElement('td'));
+    let button = td_button.appendChild(document.createElement("button"));
+    let span = td_status.appendChild(document.createElement("span"));
+    let img = span.appendChild(document.createElement("img"));
 
-        td_status.innerHTML = "Online";
-        button.innerHTML = "Send Request";
-        td_username.innerHTML = username;
-        td_score.innerHTML = password;
-        table_body.appendChild(tr);
+    button.setAttribute("type","button");
+    button.setAttribute("id", "button_"+user);
+    button.setAttribute("value","sendRequest");
+    button.setAttribute("class","buttonRequest");
+    button.setAttribute("onclick", "sendRequest(\""+user+"\");");
+    img.setAttribute("src", "./images/online-icon.png");
+    img.setAttribute("className", "icon");
+
+    td_status.innerHTML = "Online";
+    button.innerHTML = "Send Request";
+    td_username.innerHTML = user;
+    td_score.innerHTML = "0";
+    tr.setAttribute("id", user);
+    table_body.appendChild(tr);
+    console.log(user+"\n");
+}
+
+function deleteUserTable(user){
+    let row = document.getElementById(user);
+    row.remove();
+}
+
+function sendRequest (user) {
+    sendWebSocket(JSON.stringify(new Message("send_request", "", myself, user)));
+    let button = document.getElementById("button_"+user);
+    button.innerHTML = "Cancel Request";
+    button.setAttribute("onclick", "cancelRequest(\""+user+"\");");
+}
+
+function acceptRequest(user){
+    sendWebSocket(JSON.stringify(new Message("accept_request", "", myself, user)));
+}
+
+function addReqTable(user) {
+    let table_body = document.getElementById("userRequests");
+
+    let tr = document.createElement('tr');
+    let td_username = tr.appendChild(document.createElement('td'));
+    let td_score = tr.appendChild(document.createElement('td'));
+    let td_button = tr.appendChild(document.createElement('td'));
+    let button = td_button.appendChild(document.createElement("button"));
+
+    td_username.setAttribute("class","center");
+    td_score.setAttribute("class","center");
+    td_button.setAttribute("class","center");
+
+    button.setAttribute("type","button");
+    button.setAttribute("value","acceptRequest");
+    button.setAttribute("class","buttonRequest");
+    button.setAttribute("onclick", "acceptRequest(\""+user+"\");");
+
+    button.innerHTML = "Accept Request";
+    td_username.innerHTML = user;
+    td_score.innerHTML = "0";
+    tr.setAttribute("id", "request_"+user);
+    table_body.appendChild(tr);
+    console.log(user+"\n");
 }

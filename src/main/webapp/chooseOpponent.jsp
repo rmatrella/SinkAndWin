@@ -14,6 +14,7 @@
 <body>
 <script src="js/websocket.js"></script>
 <script src="js/requests.js"></script>
+<script> waitForSocketConnection(ws, registerUser);</script>
 <h2 class="center-text"> Welcome
     <span id="loggedUsername"><%
         out.print(((User)session.getAttribute("logUser")).getUsername());%></span>!
@@ -48,13 +49,7 @@
                    </tr>
                    </tbody>
                </table>
-   </div>
-    <div class="search-container">
-        <form action="FindOpponentServlet">
-            <input type="text" placeholder="Search.." name="search">
-            <button type="submit"><img src="./images/search.png" id="search"></button>
-        </form>
-    </div>
+
     <div class="containerTable">
         <h3 class="center" style="margin-left:165px"> Game requests</h3>
         <table class="table" id="request_table">
@@ -71,7 +66,7 @@
                 </th>
             </tr>
             </thead>
-            <tbody style="background: #9daccb;">
+            <tbody id="userRequests" style="background: #9daccb;">
             <% for(int j = 0; j < 2; j++)
             {
             %>

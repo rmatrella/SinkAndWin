@@ -63,6 +63,18 @@ websocket_handle({text, Frame}, State) ->
             <<"data">> => <<"Now you are online!">>}),
           NewState = State
       end;
+    send_request ->
+      NewState = State,
+      whereis(Receiver) ! Frame,
+      Response = jsx:encode(#{<<"type">> => <<"info">>,
+        <<"sender">> => <<"WebSocket">>,
+        <<"data">> => <<"Request correctly sent!">>});
+    accept_request ->
+      NewState = State,
+      whereis(Receiver) ! Frame,
+      Response = jsx:encode(#{<<"type">> => <<"info">>,
+        <<"sender">> => <<"WebSocket">>,
+        <<"data">> => <<"Request correctly accepted!">>});
     _ ->
       NewState = State,
       Response = jsx:encode(#{<<"type">> => <<"nothing">>,

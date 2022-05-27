@@ -73,13 +73,16 @@ public class KeyValueDB {
     public User isLogin(String username, String password) {
         User user = null;
         String pwd;
+        String points;
 
         String userExists = get(username);
         System.out.println("USER: " + userExists);
         pwd = getValue("user:" + username + ":password");
+        points = getValue("user:" + username + ":points");
+        System.out.println();
 
         if (pwd != null && pwd.equals(password)) {
-            user = new User(username, password);
+            user = new User(username, password, Integer.parseInt(points));
         }
         return user;
     }
@@ -87,7 +90,7 @@ public class KeyValueDB {
 
     public boolean usernameAlreadyUsed(String username) {
 
-        String password = getValue("user:"+username+":password");
+        String password = getValue("user:"+ username +":password");
 
         if(password != null)
             return true;

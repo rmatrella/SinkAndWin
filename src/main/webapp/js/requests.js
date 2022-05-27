@@ -1,37 +1,37 @@
 waitForSocketConnection(ws, registerUser);
 
 function registerUser () {
-    var username = document.getElementById("loggedUsername").textContent;
-    sendWebSocket(JSON.stringify(new Message( "user_registration", "",username, "WebSocket",)));
+    let username = document.getElementById("loggedUsername").textContent;
+    let points = document.getElementById("hidden").textContent;
+    console.log(JSON.stringify(new Message( "user_registration", points,username, "WebSocket")));
+    sendWebSocket(JSON.stringify(new Message( "user_registration", points,username, "WebSocket")));
 }
 
 function logoutUser(){
-    var username = document.getElementById("loggedUsername").textContent;
+    let username = document.getElementById("loggedUsername").textContent;
     sendWebSocket(JSON.stringify(new Message( "user_logout", "",username, "WebSocket",)));
 }
 
 
 ws.onmessage = function (event) {
     console.log("message received: "+ event.data);
-    let data;
-    let type;
 
-    //if(typeof event.data === 'jsonString')
-    //{
-        let jsonString = JSON.parse(event.data);
-        type = jsonString.type;
-        data = jsonString.data;
-    //}
-   //else
-    //{
-      //  type = "other";
-        //data = event.data;
-    //}
+    let jsonString = JSON.parse(event.data);
+    let type = jsonString.type;
+    let data = jsonString.data;
+
    console.log(type + "; " +  data);
 
     switch (type){
         case "user_list":
-            addUsersTable(data);
+            console.log("user_list");
+            console.log("DATA: " + data[0]);
+            for(let i = 0; i < data.length/2 && i < 5; i++)
+                addUsersTable(data[i], 0);
+            break;
+
+        case "add_user":
+            addUsersTable(data[0], data[1]);
             break;
 
         case "info":
@@ -48,12 +48,13 @@ ws.onmessage = function (event) {
     }
 }
 
-function addUsersTable(usersList) {
+function addUsersTable(username, points) {
 
     let table_body = document.getElementById("onlineUsers");
     let empty_row = document.getElementById("emptyRow");
 
-    for(let i = 0; i < usersList.length; i++) {
+        console.log("USERS: " + username);
+
         empty_row.remove();
         let tr = document.createElement('tr');
         let td_username = tr.appendChild(document.createElement('td'));
@@ -72,9 +73,7 @@ function addUsersTable(usersList) {
 
         td_status.innerHTML = "Online";
         button.innerHTML = "Send Request";
-        td_username.innerHTML = usersList[i];
-        td_score.innerHTML = "0";
+        td_username.innerHTML = username;
+        td_score.innerHTML = password;
         table_body.appendChild(tr);
-        console.log(usersList[i]+"\n");
-    }
 }

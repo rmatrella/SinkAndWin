@@ -20,9 +20,9 @@
 </h2>
 <a href="LogoutServlet"><button>Logout</button></a>
 <div id="snippetContent">
-   <div class="containerTable">
+   <div class="containerTable" class="opponent">
        <h3 class="center"> Choose an opponent! </h3>
-               <table class="table">
+               <table class="table" class="opponent">
                    <thead>
                        <tr>
                            <th>
@@ -91,6 +91,10 @@
         </table>
     </div>
 </div>
+<span id="hidden">
+    <%
+       out.print(((User)session.getAttribute("logUser")).getPoints());
+    %>
 </body>
 </html>
 

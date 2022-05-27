@@ -68,3 +68,13 @@ img.icon {
 #request_table{
     width: 146%;
 }
+
+#hidden{
+    visibility: hidden;
+}
+
+#opponent{
+    min-width: 1020px;
+    min-height: 250px;
+}
+

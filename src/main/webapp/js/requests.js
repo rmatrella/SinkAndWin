@@ -1,12 +1,8 @@
 let online_users = new Array();
 let user_requests = new Array();
+let ongame_users = new Array();
 let myself;
 let opponent;
-
-function registerUser () {
-    myself = document.getElementById("loggedUsername").textContent;
-    sendWebSocket(JSON.stringify(new Message( "user_registration", "",myself, "WebSocket")));
-}
 
 ws.onmessage = function (event) {
     console.log("message received: "+ event.data);
@@ -23,10 +19,15 @@ ws.onmessage = function (event) {
                 addUserTable(data[i]);
             }
             break;
+
         case "add_user":
             addUserTable(data);
             break;
+
         case "delete_user":
+
+            let i = online_users.indexOf(data);
+            online_users.splice(i);
             deleteUserTable(data);
             break;
 
@@ -38,14 +39,13 @@ ws.onmessage = function (event) {
         case "accept_request":
             alert("request accepted by " + sender);
             opponent = sender;
-            window.location.href = "../pages/battleship.jsp?opponent="+opponent;
+            location.href = "pages/battleship.jsp?opponent="+opponent+"&first_turn=true";
             break;
 
         case "info":
             alert(data);
             if(data == "Request correctly accepted!") {
-                opponent = sender;
-                window.location.href = "../pages/battleship.jsp?opponent="+opponent;
+                location.href = "pages/battleship.jsp?opponent="+opponent+"&first_turn=false";
             }
             break;
 
@@ -57,6 +57,11 @@ ws.onmessage = function (event) {
         default:
             break;
     }
+}
+
+function registerUser () {
+    myself = document.getElementById("loggedUsername").textContent;
+    sendWebSocket(JSON.stringify(new Message( "user_registration", "",myself, "WebSocket")));
 }
 
 function addUserTable(user) {
@@ -105,6 +110,7 @@ function sendRequest (user) {
 
 function acceptRequest(user){
     sendWebSocket(JSON.stringify(new Message("accept_request", "", myself, user)));
+    opponent = user;
 }
 
 function addReqTable(user) {

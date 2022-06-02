@@ -45,6 +45,10 @@ table td {
     /* text-shadow: 2px 2px 4px black; */
 }
 
+.hidden {
+    visibility: hidden;
+}
+
 
 /* REGOLE ASSOCIATE AI DIFFERENTI CONTENITORI */
 

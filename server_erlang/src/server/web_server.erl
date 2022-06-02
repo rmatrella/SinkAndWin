@@ -75,6 +75,18 @@ websocket_handle({text, Frame}, State) ->
       Response = jsx:encode(#{<<"type">> => <<"info">>,
         <<"sender">> => <<"WebSocket">>,
         <<"data">> => <<"Request correctly accepted!">>});
+    game_move ->
+      NewState = State,
+      whereis(Receiver) ! Frame,
+      Response = jsx:encode(#{<<"type">> => <<"info">>,
+        <<"sender">> => <<"WebSocket">>,
+        <<"data">> => <<"Move correctly sent!">>});
+    move_reply ->
+      NewState = State,
+      whereis(Receiver) ! Frame,
+      Response = jsx:encode(#{<<"type">> => <<"info">>,
+        <<"sender">> => <<"WebSocket">>,
+        <<"data">> => <<"Response correctly sent!">>});
     _ ->
       NewState = State,
       Response = jsx:encode(#{<<"type">> => <<"nothing">>,

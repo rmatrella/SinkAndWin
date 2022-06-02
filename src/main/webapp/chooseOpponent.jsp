@@ -67,21 +67,6 @@
             </tr>
             </thead>
             <tbody id="userRequests" style="background: #9daccb;">
-            <% for(int j = 0; j < 2; j++)
-            {
-            %>
-            <tr>
-                <td class="center">
-                    Mila Kunis
-                </td>
-                <td class="center">
-                    50
-                </td>
-                <td class="center">
-                    <button type="button" value="acceptRequest" class="buttonRequest"> Accept Request</button>
-                </td>
-            </tr>
-            <% } %>
             </tbody>
         </table>
     </div>

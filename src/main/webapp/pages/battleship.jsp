@@ -5,6 +5,7 @@
   Time: 21:30
   To change this template use File | Settings | File Templates.
 --%>
+<%@ page import="it.unipi.dsmt.dto.User" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="eng">
@@ -12,11 +13,18 @@
     <title>Battleship</title>
     <link rel="stylesheet" type="text/css" href="../css/game.css">
     <meta charset="utf-8" />
-    <script type="text/javascript" src="../js/game.js"></script> <!-- Viene richiamato il file con il codice Javascript -->
+    <script src="../js/websocket.js"></script>
+    <script src="../js/game_requests.js"></script>
+    <script> waitForSocketConnection(ws, registerUser);</script>
+    <script type="text/javascript" src="../js/battleship.js"></script>
 </head>
 
 <body>
-
+<%
+    String username = ((User)session.getAttribute("logUser")).getUsername();
+    String opponent = request.getParameter("opponent");
+    String first_turn = request.getParameter("first_turn");
+%>
 <div id="main_container">  <!-- Inizio contenitore principale -->
 
     <div id="title">  <!-- Inizio titolo -->
@@ -24,18 +32,19 @@
     </div>  <!-- Fine titolo -->
 
     <div id="player">  <!-- Inizio giocatore -->
-        <h3 id="playerTitle"></h3>
-    </div>  <!-- Fine giocatore -->
+        <h3 id="loggedUsername"><%=username%></h3>
+        <h2 id="turn"></h2>
+        <p id="opponentUsername" style="visibility: hidden;"><%=opponent%></p>
+        <p id="firstTurn" style="visibility: hidden;"><%=first_turn%></p>
+    </div>
 
     <div id="grids"> <!-- Inizio GRIGLIE create dinamicamente da JS-->
     </div>  <!-- Fine GRIGLIE -->
 
     <!-- Disegna nel div grids le tabelle a seconda del turno di gioco -->
-    <script type="text/javascript">drawGrids()</script>
+    <script type="text/javascript">setShips()</script>
 
     <div id="console" class="console"> <!-- Inizio CONSOLE -->
-
-        <!-- <script>consoleSettingMsg()</script> -->
 
         <table class="console">
             <tr>
@@ -50,7 +59,7 @@
             </tr>
             <tr>
                 <td>2</td>
-                <td>Corrazzate</td>
+                <td>Corazzate</td>
                 <td>4</td>
             </tr>
             <tr>

@@ -2,6 +2,8 @@ package it.unipi.dsmt.persistence;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import it.unipi.dsmt.dto.User;
 import org.iq80.leveldb.*;
@@ -102,6 +104,26 @@ public class KeyValueDB {
 
         putValue("user:" + username + ":password", password);
         putValue("user:" + username + ":points", "0");
+    }
+
+    public String ifUsername(String username) {
+
+        try (DBIterator iterator = db.iterator();) {
+            for (iterator.seekToFirst(); iterator.hasNext(); iterator.next()) {
+
+                String key = asString(iterator.peekNext().getKey());
+                System.out.println("US: " + key);
+                if (key.startsWith("user") && key.contains("password")) {
+                    String[] us = key.split(":");
+                    if (us[1].equals(username))
+                        return "true";
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return "false";
     }
 }
 

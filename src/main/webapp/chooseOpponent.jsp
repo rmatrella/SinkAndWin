@@ -1,4 +1,8 @@
-<%@ page import="it.unipi.dsmt.dto.User" %><%--
+<%@ page import="it.unipi.dsmt.dto.User" %>
+<%@ page import="java.util.List" %>
+<%@ page import="it.unipi.dsmt.persistence.KeyValueDB" %>
+<%@ page import="java.security.Key" %>
+<%@ page import="java.util.Map" %><%--
   Created by IntelliJ IDEA.
   User: matre
   Date: 19/05/2022
@@ -14,17 +18,24 @@
 <body>
 <script src="js/websocket.js"></script>
 <script src="js/requests.js"></script>
+<%
+    /*String user = (String) session.getAttribute("user");
+    System.out.println("user: " + user);
+    String exists = (String) session.getAttribute("exists");
+    System.out.println("exists: " + exists);*/
+%>
 <script> waitForSocketConnection(ws, registerUser);</script>
+
 <h2 class="center-text"> Welcome
     <span id="loggedUsername"><%
         out.print(((User)session.getAttribute("logUser")).getUsername());%></span>!
 </h2>
-<a href="LogoutServlet"><button>Logout</button></a>
+<a href="LogoutServlet" id="logout"><button>Logout</button></a>
 <div id="snippetContent">
    <div class="containerTable" class="opponent">
        <h3 class="center"> Choose an opponent! </h3>
-               <table class="table" class="opponent">
-                   <thead>
+               <table class="table" class="opponent" style="min-width: 1020px; min-height: 250px;">
+                   <thead style="background-color: #9daccb;">
                        <tr>
                            <th>
                                <span>User</span>
@@ -41,19 +52,13 @@
                        </tr>
                        </thead>
                    <tbody id="onlineUsers" style="background: #9daccb;">
-                   <tr id="emptyRow">
-                       <td></td>
-                       <td></td>
-                       <td></td>
-                       <td></td>
-                   </tr>
                    </tbody>
                </table>
-
+   </div>
     <div class="containerTable">
-        <h3 class="center" style="margin-left:165px"> Game requests</h3>
-        <table class="table" id="request_table">
-            <thead>
+        <h3 class="center"> Game requests</h3>
+        <table class="table" id="request_table" style="min-width: 1020px; min-height: 250px;">
+            <thead style="background-color: #9daccb;">
             <tr>
                 <th>
                     <span>User</span>
@@ -70,11 +75,19 @@
             </tbody>
         </table>
     </div>
+    <div id="search-container">
+        <h3 class="center" style="margin-right: 12%;"> Search a player </h3>
+            <input type="text" id="userSearch" placeholder="Search.." name="userSearch">
+            <button onclick="findUser();"><img src="./images/search.png" id="search"></button>
+    </div>
+</div>
 </div>
 <span id="hidden">
-    <%
-       out.print(((User)session.getAttribute("logUser")).getPoints());
-    %>
+<%
+    //if(user != null)
+      //  out.println("<script> findUser(\"" + user + "\", \"" + exists + "\"); </script>");
+%>
+</span>
 </body>
 </html>
 

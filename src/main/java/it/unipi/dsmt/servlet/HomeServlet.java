@@ -27,7 +27,6 @@ public class HomeServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
 
-
         if(request.getParameter("loginButton") != null)
         {
             System.out.println("doPost Login");
@@ -35,6 +34,7 @@ public class HomeServlet extends HttpServlet {
 
             if(user == null)
             {
+                //response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 PrintWriter out = response.getWriter();
                 out.println("<script type=\"text/javascript\">");
                 out.println("alert('Username or password wrong, please try again!');");
@@ -47,13 +47,18 @@ public class HomeServlet extends HttpServlet {
             }
             else
             {
-                 session.setAttribute("logUser", user);
+                session.setAttribute("logUser", user);
                  //Utils.goTo("index.jsp", request, response);
+                //PrintWriter out = response.getWriter();
+                /*out.println("<script>");
+                out.println("waitForSocketConnection(ws, " + user.getUsername() + ");");
+                out.println("</script>");*/
                 Utils.goTo("chooseOpponent.jsp", request, response);
             }
         }else{ //registration part
             if(db.usernameAlreadyUsed(username))
             {
+                //response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 PrintWriter out = response.getWriter();
                 out.println("<script type=\"text/javascript\">");
                 out.println("alert('Username already used, change it and try again!');");
@@ -63,6 +68,7 @@ public class HomeServlet extends HttpServlet {
             }
             else
             {
+                //response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 PrintWriter out = response.getWriter();
                 out.println("<script type=\"text/javascript\">");
                 out.println("alert('Registration done, login to join the game!');");

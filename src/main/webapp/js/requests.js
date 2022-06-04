@@ -3,6 +3,7 @@ let user_requests = new Array();
 let ongame_users = new Array();
 let myself;
 let opponent;
+let currentIndex = 0;
 
 function registerUser () {
     myself = document.getElementById("loggedUsername").textContent;
@@ -21,35 +22,50 @@ ws.onmessage = function (event) {
     console.log("ONGAME:" + ongame_users);
     console.log("sender: " + sender + " receiver: " + receiver);
     switch (type){
+
         case "user_list":
+            shuffle(data);
+            console.log(data);
             for(let i=0; i<data.length; i++){
                 online_users.push(data[i]);
-                if(i < 5)
+                if(i < 5) {
                     addUserTable(data[i]);
+                }
+            }
+            if(online_users.length > 5) {
+                document.getElementById("next").disabled = false;
+                document.getElementById("prev").disabled = false;
             }
             break;
 
         case "add_user":
             addUserTable(data);
             online_users.push(data);
+            //shuffle(online_users);
             break;
 
         case "delete_user":
-            deleteUserTable(data);
+            if(!ongame_users.includes(data))
+                deleteUserTable(data);
             if(online_users.includes(data))
             {
                 index = online_users.indexOf(data);
                 online_users.splice(index, 1);
+                deleteRequestTable(data);
+                currentIndex --;
             }
             break;
+
         case "ongame_user":
             index = online_users.indexOf(data);
             online_users.splice(index, 1);
             ongame_users.push(data);
-            deleteUserTable(data);
+            //deleteUserTable(data);
+            updateUserTable(data);
             deleteRequestTable(data);
             console.log(online_users + ";" + ongame_users);
             break;
+
         case "ongame_list":
             for(let i=0; i<data.length; i++){
                 ongame_users.push(data[i]);
@@ -57,20 +73,23 @@ ws.onmessage = function (event) {
             console.log("" +
                 "ongame:" + ongame_users);
             break;
+
         case "send_request":
-            user_requests.push(sender);
+            //user_requests.push(sender);
             addReqTable(sender);
             break;
+
         case "cancel_request":
-            index = user_requests.indexOf(sender);
-            user_requests.splice(index, 1);
+            //index = user_requests.indexOf(sender);
+            //user_requests.splice(index, 1);
             let row = document.getElementById("request_" + sender);
             row.remove();
             break;
+
         case "accept_request":
             alert("request accepted by " + sender);
             opponent = sender;
-            notifyOnGame();
+            //notifyOnGame();
             location.href = "pages/battleship.jsp?opponent="+opponent+"&first_turn=true";
             break;
 
@@ -96,33 +115,98 @@ function registerUser () {
     sendWebSocket(JSON.stringify(new Message( "user_registration", "",myself, "WebSocket")));
 }
 
+function previousUsers(){
+
+    cleanTable();
+
+    var n = online_users.length;
+    var val = currentIndex;
+
+    for(var i = currentIndex-5; i < val; i++) {
+        console.log(currentIndex + " + " + i);
+        addUserTable(online_users[(i % n + n) % n]);
+        currentIndex = ((i-1) % n + n) % n;
+        console.log(currentIndex + " + " + i);
+    }
+}
+
+function nextUsers(){
+
+    cleanTable();
+
+    var n = online_users.length;
+    var val = currentIndex;
+
+    for(var i = currentIndex; i < val + 5; i++) {
+        console.log(i<currentIndex + 5);
+        console.log(currentIndex + " + " + i);
+        console.log("ONLINE USER : " + online_users[(i % n + n) % n]);
+        addUserTable(online_users[(i % n + n) % n]);
+        currentIndex = ((i+1) % n + n) % n;
+        console.log(currentIndex + " + " + i);
+    }
+}
+
+function shuffle(a) {
+    let j, x, i;
+    for (i = a.length - 1; i > 0; i--) {
+        j = Math.floor(Math.random() * (i + 1));
+        x = a[i];
+        a[i] = a[j];
+        a[j] = x;
+    }
+    return a;
+}
+
+
+function cleanTable(){
+
+    var table = document.getElementById('onlineUsers');
+    while(table.rows.length > 0) {
+        table.deleteRow(0);
+    }
+}
+
 function addUserTable(user) {
     let table_body = document.getElementById("onlineUsers");
 
     let tr = document.createElement('tr');
     let td_username = tr.appendChild(document.createElement('td'));
-    let td_status = tr.appendChild(document.createElement('td'));
+    let td_status = tr.appendChild(document.createElement("td"));
+    let img = td_status.appendChild(document.createElement("img"));
+    //let td_status = span.appendChild(document.createElement('td'));
     let td_score = tr.appendChild(document.createElement('td'));
     let td_button = tr.appendChild(document.createElement('td'));
     let button = td_button.appendChild(document.createElement("button"));
-    let span = td_status.appendChild(document.createElement("span"));
-    let img = span.appendChild(document.createElement("img"));
-
+    //let span = td_status.appendChild(document.createElement("span"));
+    let text = document.createTextNode("Online");
+    td_status.appendChild(text);
     button.setAttribute("type","button");
     button.setAttribute("id", "button_"+user);
     button.setAttribute("value","sendRequest");
     button.setAttribute("class","buttonRequest");
     button.setAttribute("onclick", "sendRequest(\""+user+"\");");
-    img.setAttribute("src", "./images/online-icon.png");
+    //img.setAttribute("src", "./images/online-icon.png");
     img.setAttribute("class", "icon");
 
-    td_status.innerHTML = "Online";
+    img.src = "./images/online-icon.png";
+    //td_status.innerHTML = "Online";
     button.innerHTML = "Send Request";
     td_username.innerHTML = user;
     td_score.innerHTML = "0";
     tr.setAttribute("id", user);
     table_body.appendChild(tr);
     console.log(user+"\n");
+}
+
+function updateUserTable(user){
+
+    let row = document.getElementById(user);
+    //let text = document.createTextNode("On game");
+    row.getElementsByTagName("td")[1].lastChild.nodeValue = "On game";
+    console.log(row.getElementsByTagName("td")[1].innerHTML);
+    row.getElementsByClassName("icon")[0].src = "./images/ongame-icon.png";
+    document.getElementById("button_" + user).disabled = true;
 }
 
 function deleteUserTable(user){
@@ -138,11 +222,18 @@ function deleteRequestTable(user){
         row.remove();
 }
 
+function deleteRequestDoneTable(user){
+    let row = document.getElementById("cancel_" + user);
+    if(row != null)
+        row.remove();
+}
+
 function sendRequest (user) {
-    sendWebSocket(JSON.stringify(new Message("send_request", "", myself, user)));
     let button = document.getElementById("button_"+user);
-    button.innerHTML = "Cancel Request";
-    button.setAttribute("onclick", "cancelRequest(\""+user+"\");");
+    //button.innerHTML = "Cancel Request";
+    button.disabled = true;
+    addRequestDoneTable(user);
+    sendWebSocket(JSON.stringify(new Message("send_request", "", myself, user)));
 }
 
 function acceptRequest(user){
@@ -155,9 +246,42 @@ function notifyOnGame(){
 }
 
 function cancelRequest(user){
-    document.getElementById("button_"+user).innerText = "Send Request";
+    let button = document.getElementById("button_"+user);
+    //button.innerText = "Send Request";
+    button.disabled = false;
+    console.log(button.disabled);
+    //button.setAttribute("onclick", "sendRequest(\""+user+"\");");
+    deleteRequestDoneTable(user);
     sendWebSocket(JSON.stringify(new Message("cancel_request", "", myself, user)));
 }
+
+function addRequestDoneTable(user){
+
+    let table_body = document.getElementById("userRequestsDone");
+
+    let tr = document.createElement('tr');
+    let td_username = tr.appendChild(document.createElement('td'));
+    let td_score = tr.appendChild(document.createElement('td'));
+    let td_button = tr.appendChild(document.createElement('td'));
+    let button = td_button.appendChild(document.createElement("button"));
+
+    td_username.setAttribute("class","center");
+    td_score.setAttribute("class","center");
+    td_button.setAttribute("class","center");
+
+    button.setAttribute("type","button");
+    button.setAttribute("value","acceptRequest");
+    button.setAttribute("class","buttonRequest");
+    button.setAttribute("onclick", "cancelRequest(\""+user+"\");");
+
+    button.innerHTML = "Cancel Request";
+    td_username.innerHTML = user;
+    td_score.innerHTML = "0";
+    tr.setAttribute("id", "cancel_"+user);
+    table_body.appendChild(tr);
+    console.log(user+"\n");
+}
+
 
 function addReqTable(user) {
     let table_body = document.getElementById("userRequests");

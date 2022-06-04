@@ -63,14 +63,32 @@ websocket_handle({text, Frame}, State) ->
             <<"data">> => <<"Now you are online!">>}),
           NewState = State
       end;
+    ongame_user ->
+      %%PID = process_info(self(), registered_name),
+      %%Name = element(2, PID),
+      register(Sender, self()),
+      sinkandwin_server ! {onGameUser,Sender},
+      Response = jsx:encode(#{<<"type">> => <<"info">>,
+        <<"sender">> => <<"WebSocket">>,
+        <<"data">> => <<"Update correctly sent!">>}),
+      NewState = State;
     send_request ->
       NewState = State,
       whereis(Receiver) ! Frame,
       Response = jsx:encode(#{<<"type">> => <<"info">>,
         <<"sender">> => <<"WebSocket">>,
         <<"data">> => <<"Request correctly sent!">>});
-    accept_request ->
+    cancel_request ->
       NewState = State,
+      whereis(Receiver) ! Frame,
+      Response = jsx:encode(#{<<"type">> => <<"info">>,
+        <<"sender">> => <<"WebSocket">>,
+        <<"data">> => <<"Cancel request correctly sent!">>});
+    accept_request ->
+      PID = process_info(self(), registered_name),
+      Name = element(2, PID),
+      NewState = State,
+      sinkandwin_server ! {onGameUser,Name},
       whereis(Receiver) ! Frame,
       Response = jsx:encode(#{<<"type">> => <<"info">>,
         <<"sender">> => <<"WebSocket">>,
@@ -96,7 +114,6 @@ websocket_handle({text, Frame}, State) ->
   {[{text, Response}], NewState};
 
 websocket_handle (_, State) -> {ok, State}.
-
 
 %% The websocket_info/2 callback is called when we use the ! operator
 %% So Cowboy will call websocket_info/2 whenever an Erlang message arrives.

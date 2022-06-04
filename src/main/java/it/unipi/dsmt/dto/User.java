@@ -20,7 +20,6 @@ public class User {
         this.points = points;
     }
 
-
     public String getUsername() {
         return username;
     }

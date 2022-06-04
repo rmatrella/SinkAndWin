@@ -34,30 +34,35 @@
 <div id="snippetContent">
    <div class="containerTable" class="opponent">
        <h3 class="center"> Choose an opponent! </h3>
-               <table class="table" class="opponent" style="min-width: 1020px; min-height: 250px;">
-                   <thead style="background-color: #9daccb;">
-                       <tr>
-                           <th>
-                               <span>User</span>
-                           </th>
-                           <th class="text-center">
-                               <span>Status</span>
-                           </th>
-                           <th class="text-center">
-                               <span>Points</span>
-                           </th>
-                           <th class="text-center">
-                               <span>Send Request</span>
-                           </th>
-                       </tr>
-                       </thead>
-                   <tbody id="onlineUsers" style="background: #9daccb;">
-                   </tbody>
-               </table>
+       <table class="table" class="opponent" style="width: 1020px; min-height: 250px;">
+           <thead style="background-color: #9daccb;">
+           <tr>
+               <th>
+                   <span>User</span>
+               </th>
+               <th class="text-center">
+                   <span>Status</span>
+               </th>
+               <th class="text-center">
+                   <span>Points</span>
+               </th>
+               <th class="text-center">
+                   <span>Send Request</span>
+               </th>
+           </tr>
+           </thead>
+           <tbody id="onlineUsers" style="background: #9daccb;">
+           </tbody>
+       </table>
+       <div id="scrollButtons">
+           <button id="prev" type="button" class="buttonTable" onclick="previousUsers();" disabled> Previous </button>
+           <button id="next" type="button" class="buttonTable" onclick="nextUsers();" disabled> Next </button>
+           <div class="clear"></div>
+       </div>
    </div>
     <div class="containerTable">
-        <h3 class="center"> Game requests</h3>
-        <table class="table" id="request_table" style="min-width: 1020px; min-height: 250px;">
+        <h3 class="center"> Game requests received </h3>
+        <table class="table" id="request_table" style="width: 1020px; min-height: 250px;">
             <thead style="background-color: #9daccb;">
             <tr>
                 <th>
@@ -75,11 +80,31 @@
             </tbody>
         </table>
     </div>
-    <div id="search-container">
+    <div class="containerTable">
+        <h3 class="center"> Game requests done</h3>
+        <table class="table" id="request_done_table" style="width: 1020px; min-height: 250px;">
+            <thead style="background-color: #9daccb;">
+            <tr>
+                <th>
+                    <span>User</span>
+                </th>
+                <th>
+                    <span>Points</span>
+                </th>
+                <th>
+                    <span>Cancel Request</span>
+                </th>
+            </tr>
+            </thead>
+            <tbody id="userRequestsDone" style="background: #9daccb;">
+            </tbody>
+        </table>
+    </div>
+    <%--<div id="search-container">
         <h3 class="center" style="margin-right: 12%;"> Search a player </h3>
             <input type="text" id="userSearch" placeholder="Search.." name="userSearch">
             <button onclick="findUser();"><img src="./images/search.png" id="search"></button>
-    </div>
+    </div>--%>
 </div>
 </div>
 <span id="hidden">

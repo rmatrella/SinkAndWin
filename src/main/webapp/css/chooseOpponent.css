@@ -18,6 +18,7 @@
     float: left;
     min-width: 1020px;
     min-height: 250px;
+    margin-left: 15%;
 }
 
 .center{
@@ -91,4 +92,34 @@ img.icon {
 
 .icon{
     width: 10%;
+}
+
+#scrollButtons{
+    margin-left: 80%;
+}
+
+#scrollButtons button{
+    display: block;
+    float: left;
+    margin-right: 35px;
+    text-align: center;
+}
+
+#scrollButtons button.last{
+    margin-right: 0;
+}
+
+.clear{
+    clear: both;
+}
+
+.buttonTable{
+    width: 20px;
+    color: royalblue;
+    background-color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+    padding: 3% 10%;
+    margin-top: 2%;
 }

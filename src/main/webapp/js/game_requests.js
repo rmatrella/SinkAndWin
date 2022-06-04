@@ -38,7 +38,8 @@ function registerUser () {
     opponent = document.getElementById("opponentUsername").textContent;
     first = document.getElementById("firstTurn").textContent;
     console.log("opponent: " + opponent);
-    sendWebSocket(JSON.stringify(new Message( "user_registration", "",myself, "WebSocket")));
+    notifyOnGame();
+    //sendWebSocket(JSON.stringify(new Message( "user_registration", "",myself, "WebSocket")));
 }
 
 function sendMove(cell){
@@ -47,4 +48,8 @@ function sendMove(cell){
 
 function sendMoveReply(reply){
     sendWebSocket(JSON.stringify(new Message("move_reply", reply, myself, opponent)));
+}
+
+function notifyOnGame(){
+    sendWebSocket(JSON.stringify(new Message("ongame_user", "", myself, "WebSocket")));
 }

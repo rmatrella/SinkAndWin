@@ -45,8 +45,7 @@ ws.onmessage = function (event) {
             break;
 
         case "delete_user":
-            if(!ongame_users.includes(data))
-                deleteUserTable(data);
+            updateUserTable(data, "offline");
             if(online_users.includes(data))
             {
                 index = online_users.indexOf(data);
@@ -61,7 +60,7 @@ ws.onmessage = function (event) {
             online_users.splice(index, 1);
             ongame_users.push(data);
             //deleteUserTable(data);
-            updateUserTable(data);
+            updateUserTable(data, "on game");
             deleteRequestTable(data);
             console.log(online_users + ";" + ongame_users);
             break;
@@ -199,13 +198,19 @@ function addUserTable(user) {
     console.log(user+"\n");
 }
 
-function updateUserTable(user){
+function updateUserTable(user, type){
 
     let row = document.getElementById(user);
     //let text = document.createTextNode("On game");
-    row.getElementsByTagName("td")[1].lastChild.nodeValue = "On game";
+    if(type == "on game") {
+        row.getElementsByTagName("td")[1].lastChild.nodeValue = "On game";
+        row.getElementsByClassName("icon")[0].src = "./images/ongame-icon.png";
+    }
+    else if(type == "offline") {
+        row.getElementsByTagName("td")[1].lastChild.nodeValue = "Offline";
+        row.getElementsByClassName("icon")[0].src = "./images/offline-icon.png";
+    }
     console.log(row.getElementsByTagName("td")[1].innerHTML);
-    row.getElementsByClassName("icon")[0].src = "./images/ongame-icon.png";
     document.getElementById("button_" + user).disabled = true;
 }
 

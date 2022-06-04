@@ -35,11 +35,11 @@ main_loop(OnlineUsersList, OnGameUserList) ->
       io:format("On game user : ~p\n", [OnGameUserList]),
       main_loop(OnlineUsersList, OnGameUserList);
     {onGameUser, Username} ->
-      %%NewListUsers = lists:delete(Username, OnlineUsersList),
+      NewListUsers = lists:delete(Username, OnlineUsersList),
       notify_all({onGameUser, Username}, OnlineUsersList),
       NewOnGameUserList = OnGameUserList ++ [Username], %% or lists:append(OnlineUsersList, [Username])
       io:format("On game user : ~p\n", [Username]),
-      main_loop(OnlineUsersList, NewOnGameUserList);
+      main_loop(NewListUsers, NewOnGameUserList);
     {delUser, Username} ->
       NewListUsers = lists:delete(Username, OnlineUsersList),
       %NewOnGameUserList = lists:delete(Username, OnGameUserList),

@@ -12,10 +12,6 @@ ws.onmessage = function (event) {
 
     switch (type){
 
-        case "info":
-            console.log(data);
-            break;
-
         case "error":
             alert(data);
             //location.href = "./logout-servlet";
@@ -37,7 +33,7 @@ function registerUser () {
     myself = document.getElementById("loggedUsername").textContent;
     opponent = document.getElementById("opponentUsername").textContent;
     first = document.getElementById("firstTurn").textContent;
-    console.log("opponent: " + opponent);
+    console.log("firstTurn: " + first);
     notifyOnGame();
     //sendWebSocket(JSON.stringify(new Message( "user_registration", "",myself, "WebSocket")));
 }

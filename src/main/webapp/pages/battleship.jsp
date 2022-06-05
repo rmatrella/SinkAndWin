@@ -1,12 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: luanabussu
-  Date: 19/05/22
-  Time: 21:30
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page import="it.unipi.dsmt.dto.User" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="eng">
 <head>
@@ -15,16 +6,16 @@
     <meta charset="utf-8" />
     <script src="../js/websocket.js"></script>
     <script src="../js/game_requests.js"></script>
-    <script> waitForSocketConnection(ws, registerUser);</script>
     <script type="text/javascript" src="../js/battleship.js"></script>
 </head>
 
 <body>
 <%
-    String username = ((User)session.getAttribute("logUser")).getUsername();
+    String username = request.getParameter("myself");
     String opponent = request.getParameter("opponent");
     String first_turn = request.getParameter("first_turn");
 %>
+
 <div id="main_container">  <!-- Inizio contenitore principale -->
 
     <div id="title">  <!-- Inizio titolo -->
@@ -37,12 +28,13 @@
         <p id="opponentUsername" style="visibility: hidden;"><%=opponent%></p>
         <p id="firstTurn" style="visibility: hidden;"><%=first_turn%></p>
     </div>
+    <script> waitForSocketConnection(ws, registerUser());</script>
 
     <div id="grids"> <!-- Inizio GRIGLIE create dinamicamente da JS-->
     </div>  <!-- Fine GRIGLIE -->
 
     <!-- Disegna nel div grids le tabelle a seconda del turno di gioco -->
-    <script type="text/javascript">setShips()</script>
+    <script type="text/javascript">setUp()</script>
 
     <div id="console" class="console"> <!-- Inizio CONSOLE -->
 
@@ -74,13 +66,9 @@
             </tr>
         </table>
 
-    </div> <!-- Fine terminali -->
+    </div>
 
-    <div id="buttons" class="buttons"> <!-- Inizio bottoni - ID è stato modificato in class per anomalia css -->
-        <a id="button" class="button" href="#" onclick="setupDone();return false;" class="blackshadow">GIOCA!</a>
-    </div>  <!-- Fine bottoni -->
-
-</div> <!-- Fine contenitore principale -->
+</div>
 
 </body>
 

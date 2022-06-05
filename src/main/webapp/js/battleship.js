@@ -17,19 +17,6 @@ let opponent_grid = [];
 
 // Crea le griglie di entrambi i giocatori
 createGrids(100);
-setTurn();
-
-function setTurn(){
-    let p = document.getElementById("turn");
-    if((turn % 2 != 0 && first=="true") || (turn % 2 == 0 && first=="false")) { //is not my turn
-        p.innerHTML = "It's your turn";
-        return;
-    }
-    else{
-        p.innerHTML = "Opponent's turn";
-        return;
-    }
-}
 
 // Funzione per creare 2 griglie array per la battaglia navale
 // n è il numero di celle totali (default 100)
@@ -49,17 +36,21 @@ function setBackground(){
         document.body.style.backgrounsizeage = "url('../images/background.jpg')";
 }
 
-function setShips() {
-    drawTable(0); //
-
+function setUp() {
+    drawTable(1);
+    drawTable(2);
+/*
     setShip(5);
-    /*setShip(4);
     setShip(4);
+    setShip(4);
+    setShip(3);*/
     setShip(3);
-    setShip(3);
-    setShip(2);
+    /*setShip(2);
     setShip(2);
     setShip(2);*/
+
+    turn = 1;
+    setTurn();
 }
 
 // funzione che disegna le tabelle:
@@ -82,21 +73,11 @@ function drawTable(mode) {
         for (let j = 0; j < 10; j++) {
             let cell_number = (i*10+j);
             cell = row.insertCell();
-            cell.setAttribute("id", cell_number.toString());
 
             switch (mode) {
                 // disegna la griglia per il posizionamento delle navi
-                case 0:
-                    if (my_grid[cell_number] === 0)
-                        cell.setAttribute("class", "empty");
-                    else if (my_grid[cell_number] === 1)
-                        cell.setAttribute("class", "ship");
-                    else if  (my_grid[cell_number] === 2)
-                        cell.setAttribute("class", "hit");
-                    else if  (my_grid[cell_number] === 3)
-                        cell.setAttribute("class", "missed");
-                    break;
                 case 1:
+                    cell.setAttribute("id", "my_"+cell_number.toString());
                     if (my_grid[cell_number] === 0)
                         cell.setAttribute("class", "empty");
                     else if (my_grid[cell_number] === 1)
@@ -108,6 +89,7 @@ function drawTable(mode) {
                     break;
                 // disegna la griglia dell'avversario per colpire
                 case 2:
+                    cell.setAttribute("id", "op_"+cell_number.toString());
                     if (opponent_grid[cell_number] === 0 || opponent_grid[cell_number] === 1) {
                         cell.setAttribute("class", "unknown");
                         cell.setAttribute("onClick", "hit(this)");
@@ -183,13 +165,12 @@ function test_vert(cell, size){
 
 function test_hor(cell, size){
     let col = cell % 10;
-    let row = Math.floor(cell/10);
 
     let test = true;
     if(col+size-1 < 10 && (col==0 || my_grid[cell-1]==0) &&
         (col==9 || my_grid[cell+size]==0)){
         for(let i=cell-10; i<=cell+10+size-1; i++){
-            if(Math.floor(i/10)<row){
+            if(Math.floor(i/10)<0){
                 i=i+9; //perché il for incrementa di 1
                 continue;
             }
@@ -211,7 +192,7 @@ function test_hor(cell, size){
     if(col-size+1>0 && (col==0 || my_grid[cell-size]==0) &&
         (col==9 || my_grid[cell+1]==0)){
         for (let i=cell+10; i>=cell-size-9; i--) {
-            if(Math.floor(i/10)>row){
+            if(Math.floor(i/10)>9){
                 i=i-9; //perché il for decrementa di 1
                 continue;
             }
@@ -244,7 +225,7 @@ function setShip(size){
                 if (test == 1) {
                     for (let i = index; i < index + size; i++) {
                         my_grid[i] = 1;
-                        let cell = document.getElementById(i.toString());
+                        let cell = document.getElementById("my_"+i.toString());
                         cell.setAttribute("class", "ship");
                     }
                     return;
@@ -252,7 +233,7 @@ function setShip(size){
                 if (test == -1) {
                     for (let i = index; i > index - size; i--) {
                         my_grid[i] = 1;
-                        let cell = document.getElementById(i.toString());
+                        let cell = document.getElementById("my_"+i.toString());
                         cell.setAttribute("class", "ship");
                     }
                     return;
@@ -263,7 +244,7 @@ function setShip(size){
                 if (test == 1) {
                     for (let i = index; i < index + size * 10; i = i + 10) {
                         my_grid[i] = 1;
-                        let cell = document.getElementById(i.toString());
+                        let cell = document.getElementById("my_"+i.toString());
                         cell.setAttribute("class", "ship");
                     }
                     return;
@@ -271,7 +252,7 @@ function setShip(size){
                 if (test == -1) {
                     for (let i = index; i > index - size * 10; i = i - 10) {
                         my_grid[i] = 1;
-                        let cell = document.getElementById(i.toString());
+                        let cell = document.getElementById("my_"+i.toString());
                         cell.setAttribute("class", "ship");
                     }
                     return;
@@ -281,19 +262,17 @@ function setShip(size){
     }
 }
 
-
-// gestisce il termine dei turni di setup
-function setupDone() {
-    let buttonContainer = document.getElementById("buttons");
-    buttonContainer.remove();
-
-    deleteGrids();
-
-    //disegno la griglia di gioco e un reminder più piccolo della mia griglia
-    drawTable(1);
-    drawTable(2);
-
-    turn = 1;
+function setTurn(){
+    let p = document.getElementById("turn");
+    console.log("first turn: "+first);
+    if((turn % 2 != 0 && first=="true") || (turn % 2 == 0 && first=="false")) { //is not my turn
+        p.innerHTML = "It's your turn";
+        return;
+    }
+    else{
+        p.innerHTML = "Opponent's turn";
+        return;
+    }
 }
 
 // cancella le griglie visibili
@@ -311,7 +290,6 @@ function deleteGrids() {
 // Stato = 2 sulla cella c'è una nave colpita
 // Stato = 3 indica mancato
 function hit(cell) {
-    console.log("first_turn: "+first+"\nturn:"+turn+"\n");
     if((turn % 2 == 0 && first=="true") || (turn % 2 != 0 && first=="false")) { //is not my turn
         alert("Wait your turn");
         return;
@@ -325,7 +303,7 @@ function hit(cell) {
 function moveReply(reply){
     if(move==null)
         return;
-    let cell = document.getElementById(move);
+    let cell = document.getElementById("op_"+move);
     switch(reply){
         case "hit":
             opponent_grid[move] = 2;
@@ -346,7 +324,6 @@ function moveReply(reply){
 
 // gestisce il cambio turno
 function changeTurn() {
-    console.log("change turn\n");
     deleteGrids();
 
     turn ++;
@@ -371,6 +348,7 @@ function checkCell(cell, player){
         }
         if(win==1) {
             message = "win";
+            console.log("opponent win");
             showMoveMsg(3);
         }
         else
@@ -382,8 +360,9 @@ function checkCell(cell, player){
 
 // gestisce il messaggio di feedback dopo un colpo sparato
 function showMoveMsg(hit){
+    console.log("show move message");
     let grid_div = document.getElementById("grids");
-    //cancella le grilglie e inserisce un div con un paragrafo per il feedback del colpo
+    //cancella le griglie e inserisce un div con un paragrafo per il feedback del colpo
     grid_div.innerHTML="";
     let hit_message_div = document.createElement("DIV");
     let hit_message = document.createElement("P");
@@ -407,9 +386,16 @@ function showMoveMsg(hit){
         hit_message.innerHTML = "<h1>NAVE MANCATA!</h1>";
         hit_message_div.appendChild(hit_message_button);
     } else if (hit === 2 || hit===3) {
+        console.log("case win:"+hit);
         hit_message_div.setAttribute("class", "hit");
-        if(hit===2) hit_message.innerHTML = "<h1>PARTITA FINITA</h1><h1>GIOCATORE"+ myself+ "VINCE!<br /><br /><h3>Premi NUOVA PARTITA per scegliere un nuovo sfidante</h3>";
-        else hit_message.innerHTML = "<h1>PARTITA FINITA</h1><h1>GIOCATORE"+ opponent + " VINCE!<br /><br /><h3>Premi NUOVA PARTITA per scegliere un nuovo sfidante</h3>";
+        if(hit===2) {
+            hit_message.innerHTML = "<h1>PARTITA FINITA</h1><h1>GIOCATORE"+ myself+ "VINCE!<br /><br /><h3>Premi NUOVA PARTITA per scegliere un nuovo sfidante</h3>";
+            console.log("if 2 hit:"+hit);
+        }
+        else {
+            hit_message.innerHTML = "<h1>PARTITA FINITA</h1><h1>GIOCATORE"+ opponent + " VINCE!<br /><br /><h3>Premi NUOVA PARTITA per scegliere un nuovo sfidante</h3>";
+            console.log("if 2 hit:"+hit);
+        }
         // aggiorna la pagina al termine della partia
         hit_message_button.setAttribute("onClick", "window.location.href = \"../chooseOpponent.jsp\";");
         hit_message_button.innerHTML = "NUOVA PARTITA";

@@ -48,7 +48,7 @@ function waitForSocketConnection(socket, callback){
                 waitForSocketConnection(socket, callback);
             }
 
-        }, 5); // wait 5 milisecond for the connection
+        }, 10); // wait 5 millisecond for the connection
 }
 
 ws.onerror = function(event) {

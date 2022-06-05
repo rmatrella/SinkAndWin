@@ -20,7 +20,6 @@ init(Req, State) ->
 websocket_init(State) ->
   io:format("Inside the websocket_init callback.\n", []),
   io:format("PID of Websocket server is ~p. ~n", [self()]),
-
   {[{text, jsx:encode(#{<<"type">> => <<"info">>,
     <<"sender">> => <<"WebSocket">>,
     <<"data">> => <<"Web socket server connection success">>})}], State}.

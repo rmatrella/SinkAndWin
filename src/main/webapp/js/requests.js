@@ -1,6 +1,6 @@
-let online_users = [];
-let user_requests = [];
-let ongame_users = [];
+let online_users = new Array();
+let user_requests = new Array();
+let ongame_users = new Array();
 let myself;
 let opponent;
 let currentIndex = 0;
@@ -18,6 +18,7 @@ ws.onmessage = function (event) {
     let data = jsonString.data;
     let sender = jsonString.sender;
     let receiver = jsonString.receiver;
+
     switch (type){
 
         case "user_list":
@@ -44,7 +45,7 @@ ws.onmessage = function (event) {
             updateUserTable(data, "offline");
             if(online_users.includes(data))
             {
-                let index = online_users.indexOf(data);
+                index = online_users.indexOf(data);
                 online_users.splice(index, 1);
                 deleteRequestTable(data);
                 currentIndex --;
@@ -52,21 +53,18 @@ ws.onmessage = function (event) {
             break;
 
         case "ongame_user":
-            let index = online_users.indexOf(data);
+            index = online_users.indexOf(data);
             online_users.splice(index, 1);
             ongame_users.push(data);
             //deleteUserTable(data);
             updateUserTable(data, "on game");
             deleteRequestTable(data);
-            console.log(online_users + ";" + ongame_users);
             break;
 
         case "ongame_list":
             for(let i=0; i<data.length; i++){
                 ongame_users.push(data[i]);
             }
-            console.log("" +
-                "ongame:" + ongame_users);
             break;
 
         case "send_request":
@@ -82,14 +80,14 @@ ws.onmessage = function (event) {
             break;
 
         case "accept_request":
-            console.log("request accepted by " + sender);
             opponent = sender;
-            location.href = "pages/battleship.jsp?opponent="+opponent+"&first_turn=true&myself="+myself;
+            //notifyOnGame();
+            location.href = "pages/battleship.jsp?opponent="+opponent+"&first_turn=true";
             break;
 
         case "info":
             if(data == "Request correctly accepted!") {
-                location.href = "pages/battleship.jsp?opponent="+opponent+"&first_turn=false&myself="+myself;
+                location.href = "pages/battleship.jsp?opponent="+opponent+"&first_turn=false";
             }
             break;
 
@@ -103,14 +101,19 @@ ws.onmessage = function (event) {
     }
 }
 
+function registerUser () {
+    myself = document.getElementById("loggedUsername").textContent;
+    sendWebSocket(JSON.stringify(new Message( "user_registration", "",myself, "WebSocket")));
+}
+
 function previousUsers(){
 
     cleanTable();
 
-    let n = online_users.length;
-    let val = currentIndex;
+    var n = online_users.length;
+    var val = currentIndex;
 
-    for(let i = currentIndex-5; i < val; i++) {
+    for(var i = currentIndex-5; i < val; i++) {
         addUserTable(online_users[(i % n + n) % n]);
         currentIndex = ((i-1) % n + n) % n;
     }
@@ -120,10 +123,10 @@ function nextUsers(){
 
     cleanTable();
 
-    let n = online_users.length;
-    let val = currentIndex;
+    var n = online_users.length;
+    var val = currentIndex;
 
-    for(let i = currentIndex; i < val + 5; i++) {
+    for(var i = currentIndex; i < val + 5; i++) {
         addUserTable(online_users[(i % n + n) % n]);
         currentIndex = ((i+1) % n + n) % n;
     }
@@ -143,7 +146,7 @@ function shuffle(a) {
 
 function cleanTable(){
 
-    let table = document.getElementById('onlineUsers');
+    var table = document.getElementById('onlineUsers');
     while(table.rows.length > 0) {
         table.deleteRow(0);
     }
@@ -315,6 +318,7 @@ function findUser(){
     let table = document.createElement("table");
     table.setAttribute("id", "searchedUser");
 
+    console.log(document.getElementById("search-container"));
     document.getElementById("search-container").appendChild(table);
     let tr = document.createElement("tr");
     tr.setAttribute("id", "searched_"+user);

@@ -1,3 +1,12 @@
+<%--
+  Created by IntelliJ IDEA.
+  User: luanabussu
+  Date: 19/05/22
+  Time: 21:30
+  To change this template use File | Settings | File Templates.
+--%>
+<%@ page import="it.unipi.dsmt.dto.User" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="eng">
 <head>
@@ -11,11 +20,10 @@
 
 <body>
 <%
-    String username = request.getParameter("myself");
+    String username = ((User)session.getAttribute("logUser")).getUsername();
     String opponent = request.getParameter("opponent");
     String first_turn = request.getParameter("first_turn");
 %>
-
 <div id="main_container">  <!-- Inizio contenitore principale -->
 
     <div id="title">  <!-- Inizio titolo -->
@@ -28,13 +36,11 @@
         <p id="opponentUsername" style="visibility: hidden;"><%=opponent%></p>
         <p id="firstTurn" style="visibility: hidden;"><%=first_turn%></p>
     </div>
-    <script> waitForSocketConnection(ws, registerUser());</script>
+    <script> waitForSocketConnection(ws, registerUser);</script>
 
     <div id="grids"> <!-- Inizio GRIGLIE create dinamicamente da JS-->
     </div>  <!-- Fine GRIGLIE -->
 
-    <!-- Disegna nel div grids le tabelle a seconda del turno di gioco -->
-    <script type="text/javascript">setUp()</script>
 
     <div id="console" class="console"> <!-- Inizio CONSOLE -->
 
@@ -66,9 +72,9 @@
             </tr>
         </table>
 
-    </div>
+    </div> <!-- Fine terminali -->
 
-</div>
+</div> <!-- Fine contenitore principale -->
 
 </body>
 

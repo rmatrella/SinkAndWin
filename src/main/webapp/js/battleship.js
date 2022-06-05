@@ -18,6 +18,19 @@ let opponent_grid = [];
 // Crea le griglie di entrambi i giocatori
 createGrids(100);
 
+function setTurn(){
+    console.log("first_turn: "+first);
+    let p = document.getElementById("turn");
+    if((turn % 2 != 0 && first=="true") || (turn % 2 == 0 && first=="false")) { //is not my turn
+        p.innerHTML = "It's your turn";
+        return;
+    }
+    else{
+        p.innerHTML = "Opponent's turn";
+        return;
+    }
+}
+
 // Funzione per creare 2 griglie array per la battaglia navale
 // n è il numero di celle totali (default 100)
 function createGrids(n) {
@@ -37,17 +50,18 @@ function setBackground(){
 }
 
 function setUp() {
+    alert("Game started!");
     drawTable(1);
     drawTable(2);
-/*
+
     setShip(5);
     setShip(4);
     setShip(4);
-    setShip(3);*/
     setShip(3);
-    /*setShip(2);
+    setShip(3);
     setShip(2);
-    setShip(2);*/
+    setShip(2);
+    setShip(2);
 
     turn = 1;
     setTurn();
@@ -73,11 +87,21 @@ function drawTable(mode) {
         for (let j = 0; j < 10; j++) {
             let cell_number = (i*10+j);
             cell = row.insertCell();
+            cell.setAttribute("id", cell_number.toString());
 
             switch (mode) {
                 // disegna la griglia per il posizionamento delle navi
+                case 0:
+                    if (my_grid[cell_number] === 0)
+                        cell.setAttribute("class", "empty");
+                    else if (my_grid[cell_number] === 1)
+                        cell.setAttribute("class", "ship");
+                    else if  (my_grid[cell_number] === 2)
+                        cell.setAttribute("class", "hit");
+                    else if  (my_grid[cell_number] === 3)
+                        cell.setAttribute("class", "missed");
+                    break;
                 case 1:
-                    cell.setAttribute("id", "my_"+cell_number.toString());
                     if (my_grid[cell_number] === 0)
                         cell.setAttribute("class", "empty");
                     else if (my_grid[cell_number] === 1)
@@ -89,7 +113,6 @@ function drawTable(mode) {
                     break;
                 // disegna la griglia dell'avversario per colpire
                 case 2:
-                    cell.setAttribute("id", "op_"+cell_number.toString());
                     if (opponent_grid[cell_number] === 0 || opponent_grid[cell_number] === 1) {
                         cell.setAttribute("class", "unknown");
                         cell.setAttribute("onClick", "hit(this)");
@@ -225,7 +248,7 @@ function setShip(size){
                 if (test == 1) {
                     for (let i = index; i < index + size; i++) {
                         my_grid[i] = 1;
-                        let cell = document.getElementById("my_"+i.toString());
+                        let cell = document.getElementById(i.toString());
                         cell.setAttribute("class", "ship");
                     }
                     return;
@@ -233,7 +256,7 @@ function setShip(size){
                 if (test == -1) {
                     for (let i = index; i > index - size; i--) {
                         my_grid[i] = 1;
-                        let cell = document.getElementById("my_"+i.toString());
+                        let cell = document.getElementById(i.toString());
                         cell.setAttribute("class", "ship");
                     }
                     return;
@@ -244,7 +267,7 @@ function setShip(size){
                 if (test == 1) {
                     for (let i = index; i < index + size * 10; i = i + 10) {
                         my_grid[i] = 1;
-                        let cell = document.getElementById("my_"+i.toString());
+                        let cell = document.getElementById(i.toString());
                         cell.setAttribute("class", "ship");
                     }
                     return;
@@ -252,7 +275,7 @@ function setShip(size){
                 if (test == -1) {
                     for (let i = index; i > index - size * 10; i = i - 10) {
                         my_grid[i] = 1;
-                        let cell = document.getElementById("my_"+i.toString());
+                        let cell = document.getElementById(i.toString());
                         cell.setAttribute("class", "ship");
                     }
                     return;
@@ -262,18 +285,6 @@ function setShip(size){
     }
 }
 
-function setTurn(){
-    let p = document.getElementById("turn");
-    console.log("first turn: "+first);
-    if((turn % 2 != 0 && first=="true") || (turn % 2 == 0 && first=="false")) { //is not my turn
-        p.innerHTML = "It's your turn";
-        return;
-    }
-    else{
-        p.innerHTML = "Opponent's turn";
-        return;
-    }
-}
 
 // cancella le griglie visibili
 function deleteGrids() {
@@ -303,7 +314,7 @@ function hit(cell) {
 function moveReply(reply){
     if(move==null)
         return;
-    let cell = document.getElementById("op_"+move);
+    let cell = document.getElementById(move);
     switch(reply){
         case "hit":
             opponent_grid[move] = 2;
@@ -348,7 +359,7 @@ function checkCell(cell, player){
         }
         if(win==1) {
             message = "win";
-            console.log("opponent win");
+            alert(opponent + " win\nPress ok to continue..");
             showMoveMsg(3);
         }
         else
@@ -360,46 +371,43 @@ function checkCell(cell, player){
 
 // gestisce il messaggio di feedback dopo un colpo sparato
 function showMoveMsg(hit){
-    console.log("show move message");
     let grid_div = document.getElementById("grids");
-    //cancella le griglie e inserisce un div con un paragrafo per il feedback del colpo
     grid_div.innerHTML="";
-    let hit_message_div = document.createElement("DIV");
-    let hit_message = document.createElement("P");
-    let hit_message_button = document.createElement("A");
-    hit_message_div.setAttribute("id", "hit_message_div");
-    hit_message.setAttribute("id", "hit_message");
-    hit_message_button.setAttribute("id", "hit_message_button");
-    hit_message_button.setAttribute("class", "button");
-    hit_message_button.innerHTML = "OK";
-    hit_message_div.appendChild(hit_message);
-    grid_div.appendChild(hit_message_div);
+
+    let message_div = document.createElement("div");
+    let message = document.createElement("p");
+    let message_button = document.createElement("a");
+    message_div.setAttribute("id", "hit_message_div");
+    message.setAttribute("id", "hit_message");
+    message_button.setAttribute("id", "hit_message_button");
+    message_button.setAttribute("class", "button");
+    message_button.innerHTML = "OK";
+    message_div.appendChild(message);
+    grid_div.appendChild(message_div);
     //se la nave è stata colpita inserisce il testo COLPITO e setta la classe del div per uno sfondo rosso
     if (hit === 1) {
-        hit_message_div.setAttribute("class", "hit");
-        hit_message_button.setAttribute("onClick", "changeTurn()");
-        hit_message.innerHTML = "<h1>NAVE COLPITA!</h1>";
-        hit_message_div.appendChild(hit_message_button);
+        message_div.setAttribute("class", "hit");
+        message_button.setAttribute("onClick", "changeTurn()");
+        message.innerHTML = "<h1>NAVE COLPITA!</h1>";
+        message_div.appendChild(message_button);
     } else if (hit === 0) {
-        hit_message_div.setAttribute("class", "missed");
-        hit_message_button.setAttribute("onClick", "changeTurn()");
-        hit_message.innerHTML = "<h1>NAVE MANCATA!</h1>";
-        hit_message_div.appendChild(hit_message_button);
+        message_div.setAttribute("class", "missed");
+        message_button.setAttribute("onClick", "changeTurn()");
+        message.innerHTML = "<h1>NAVE MANCATA!</h1>";
+        message_div.appendChild(message_button);
     } else if (hit === 2 || hit===3) {
-        console.log("case win:"+hit);
-        hit_message_div.setAttribute("class", "hit");
+        message_div.setAttribute("class", "hit");
         if(hit===2) {
-            hit_message.innerHTML = "<h1>PARTITA FINITA</h1><h1>GIOCATORE"+ myself+ "VINCE!<br /><br /><h3>Premi NUOVA PARTITA per scegliere un nuovo sfidante</h3>";
-            console.log("if 2 hit:"+hit);
+            message.innerHTML = "<h1>PARTITA FINITA</h1><h1>GIOCATORE "+ myself+ " VINCE!<br /><br /><h3>Premi NUOVA PARTITA per scegliere un nuovo sfidante</h3>";
         }
         else {
-            hit_message.innerHTML = "<h1>PARTITA FINITA</h1><h1>GIOCATORE"+ opponent + " VINCE!<br /><br /><h3>Premi NUOVA PARTITA per scegliere un nuovo sfidante</h3>";
-            console.log("if 2 hit:"+hit);
+            message.innerHTML = "<h1>PARTITA FINITA</h1><h1>GIOCATORE "+ opponent + " VINCE!<br /><br /><h3>Premi NUOVA PARTITA per scegliere un nuovo sfidante</h3>";
+            window.location.href = "../chooseOpponent.jsp";
         }
-        // aggiorna la pagina al termine della partia
-        hit_message_button.setAttribute("onClick", "window.location.href = \"../chooseOpponent.jsp\";");
-        hit_message_button.innerHTML = "NUOVA PARTITA";
-        hit_message_div.appendChild(hit_message_button);
+
+        message_button.setAttribute("onClick", "window.location.href = \"../chooseOpponent.jsp\";");
+        message_button.innerHTML = "NUOVA PARTITA";
+        message_div.appendChild(message_button);
 
     }
 }

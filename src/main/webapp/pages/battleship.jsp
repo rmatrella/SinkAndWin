@@ -24,6 +24,7 @@
     <div id="player">  <!-- Inizio giocatore -->
         <h3 id="loggedUsername"><%=username%></h3>
         <h2 id="turn"></h2>
+        <h3 id="timer"></h3>
         <p id="opponentUsername" style="visibility: hidden;"><%=opponent%></p>
         <p id="firstTurn" style="visibility: hidden;"><%=first_turn%></p>
     </div>

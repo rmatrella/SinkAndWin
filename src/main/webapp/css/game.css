@@ -82,7 +82,7 @@ table td {
     text-align: center;
 }
 
-#hit_message_div {
+#message_div {
     width: 40%;
     opacity: 0.8;
     padding: 15px 10px;
@@ -186,6 +186,6 @@ a:hover.button {
     display: inline-block;
 }
 
-#hit_message_button {
+#message_button {
     margin: 20px;
 }

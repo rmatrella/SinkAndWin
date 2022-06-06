@@ -5,6 +5,8 @@
 // Indica il turno di gioco. Se dispari, giocatore 1 di turno
 let turn;
 let move;
+let start; // istante di inizio del timer
+let timer_id;
 
 // Array di oggetti che indicano lo stato della singola cella della battaglia
 // Se lo stato è 0 la cella è vuota
@@ -19,15 +21,41 @@ let opponent_grid = [];
 createGrids(100);
 
 function setTurn(){
-    console.log("first_turn: "+first);
     let p = document.getElementById("turn");
     if((turn % 2 != 0 && first=="true") || (turn % 2 == 0 && first=="false")) { //is not my turn
         p.innerHTML = "It's your turn";
+        setTimer();
         return;
     }
     else{
         p.innerHTML = "Opponent's turn";
         return;
+    }
+}
+
+function setTimer(){
+    start = new Date().getTime();
+    timer_id = setInterval(updateTimer, 1000);
+
+}
+
+function updateTimer(){
+    let now = new Date().getTime();
+    let time_left = Math.floor((start + 30*1000 - now)/1000);
+    let timer = document.getElementById("timer");
+
+    if(time_left > 0) {
+        if(time_left<10)
+            timer.innerHTML = "0:0" + time_left;
+        else
+            timer.innerHTML = "0:" + time_left;
+    }
+    else {
+        clearInterval(timer_id);
+        timer.innerHTML="";
+        move = Math.floor(Math.random() * 99);
+        alert("TIME UP!\n Random move: " + move);
+        waitForSocketConnection(ws, sendMove(move));
     }
 }
 
@@ -54,14 +82,14 @@ function setUp() {
     drawTable(1);
     drawTable(2);
 
-    setShip(5);
+   /* setShip(5);
     setShip(4);
-    setShip(4);
+    setShip(4);*/
+    setShip(3);/*
     setShip(3);
-    setShip(3);
     setShip(2);
     setShip(2);
-    setShip(2);
+    setShip(2);*/
 
     turn = 1;
     setTurn();
@@ -305,9 +333,10 @@ function hit(cell) {
         alert("Wait your turn");
         return;
     }
-
+    clearInterval(timer_id);
+    let timer = document.getElementById("timer");
+    timer.innerHTML="";
     move = cell.id;
-    //invio la mia mossa
     waitForSocketConnection(ws, sendMove(move));
 }
 
@@ -376,25 +405,18 @@ function showMoveMsg(hit){
 
     let message_div = document.createElement("div");
     let message = document.createElement("p");
-    let message_button = document.createElement("a");
-    message_div.setAttribute("id", "hit_message_div");
-    message.setAttribute("id", "hit_message");
-    message_button.setAttribute("id", "hit_message_button");
-    message_button.setAttribute("class", "button");
-    message_button.innerHTML = "OK";
+    message_div.setAttribute("id", "message_div");
+    message.setAttribute("id", "message");
     message_div.appendChild(message);
     grid_div.appendChild(message_div);
-    //se la nave è stata colpita inserisce il testo COLPITO e setta la classe del div per uno sfondo rosso
     if (hit === 1) {
         message_div.setAttribute("class", "hit");
-        message_button.setAttribute("onClick", "changeTurn()");
         message.innerHTML = "<h1>NAVE COLPITA!</h1>";
-        message_div.appendChild(message_button);
+        setTimeout(changeTurn, 1500);
     } else if (hit === 0) {
         message_div.setAttribute("class", "missed");
-        message_button.setAttribute("onClick", "changeTurn()");
         message.innerHTML = "<h1>NAVE MANCATA!</h1>";
-        message_div.appendChild(message_button);
+        setTimeout(changeTurn, 1500);
     } else if (hit === 2 || hit===3) {
         message_div.setAttribute("class", "hit");
         if(hit===2) {
@@ -402,12 +424,8 @@ function showMoveMsg(hit){
         }
         else {
             message.innerHTML = "<h1>PARTITA FINITA</h1><h1>GIOCATORE "+ opponent + " VINCE!<br /><br /><h3>Premi NUOVA PARTITA per scegliere un nuovo sfidante</h3>";
-            //window.location.href = "../chooseOpponent.jsp";
         }
-
-        message_button.setAttribute("onClick", "window.location.href = \"../chooseOpponent.jsp\";");
-        message_button.innerHTML = "NUOVA PARTITA";
-        message_div.appendChild(message_button);
+        setTimeout(function (){window.location.href = "../chooseOpponent.jsp";}, 3000);
 
     }
 }

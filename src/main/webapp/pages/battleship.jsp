@@ -29,10 +29,9 @@
         <p id="firstTurn" style="visibility: hidden;"><%=first_turn%></p>
     </div>
     <script> waitForSocketConnection(ws, registerUser);</script>
-
+    <div id="alert"></div>
     <div id="grids"> <!-- Inizio GRIGLIE create dinamicamente da JS-->
     </div>  <!-- Fine GRIGLIE -->
-
 
     <div id="console" class="console"> <!-- Inizio CONSOLE -->
 

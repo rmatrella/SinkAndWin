@@ -54,7 +54,7 @@ function updateTimer(){
         clearInterval(timer_id);
         timer.innerHTML="";
         move = Math.floor(Math.random() * 99);
-        alert("TIME UP!\n Random move: " + move);
+        temporaryDiv("TIME UP!\n Random move: " + move,1000);
         waitForSocketConnection(ws, sendMove(move));
     }
 }
@@ -78,18 +78,18 @@ function setBackground(){
 }
 
 function setUp() {
-    alert("Game started!");
+    temporaryDiv("Game started", 1500);
     drawTable(1);
     drawTable(2);
 
-   /* setShip(5);
+    setShip(5);
     setShip(4);
-    setShip(4);*/
-    setShip(3);/*
+    setShip(4);
+    setShip(3);
     setShip(3);
     setShip(2);
     setShip(2);
-    setShip(2);*/
+    setShip(2);
 
     turn = 1;
     setTurn();
@@ -118,17 +118,6 @@ function drawTable(mode) {
             cell.setAttribute("id", cell_number.toString());
 
             switch (mode) {
-                // disegna la griglia per il posizionamento delle navi
-                case 0:
-                    if (my_grid[cell_number] === 0)
-                        cell.setAttribute("class", "empty");
-                    else if (my_grid[cell_number] === 1)
-                        cell.setAttribute("class", "ship");
-                    else if  (my_grid[cell_number] === 2)
-                        cell.setAttribute("class", "hit");
-                    else if  (my_grid[cell_number] === 3)
-                        cell.setAttribute("class", "missed");
-                    break;
                 case 1:
                     if (my_grid[cell_number] === 0)
                         cell.setAttribute("class", "empty");
@@ -330,7 +319,7 @@ function deleteGrids() {
 // Stato = 3 indica mancato
 function hit(cell) {
     if((turn % 2 == 0 && first=="true") || (turn % 2 != 0 && first=="false")) { //is not my turn
-        alert("Wait your turn");
+        temporaryDiv("Wait your turn", 1000);
         return;
     }
     clearInterval(timer_id);
@@ -355,8 +344,13 @@ function moveReply(reply){
             cell.setAttribute("class", "missed");
             showMoveMsg(0);
             break;
-        case "win":
+        case "sunk":
+            opponent_grid[move] = 2;
+            cell.setAttribute("class", "hit");
             showMoveMsg(2);
+            break;
+        case "win":
+            showMoveMsg(3);
             break;
     }
     move = null;
@@ -375,11 +369,14 @@ function changeTurn() {
 
 function checkCell(cell, player){
     let message;
-    if(my_grid[cell]===0)
+    if(my_grid[cell]===0 || my_grid[cell]===3) {
+        my_grid[cell] = 3;
         message = "missed";
+    }
     if(my_grid[cell]===1) {
         my_grid[cell]=2;
         let win = 1;
+
         for(let i=0; i<100; i++){
             if(my_grid[i] == 1) {
                 win = 0;
@@ -388,14 +385,52 @@ function checkCell(cell, player){
         }
         if(win==1) {
             message = "win";
-            showMoveMsg(3);
+            showMoveMsg(4);
+            waitForSocketConnection(ws, sendMoveReply(message));
+            return;
         }
-        else
-            message = "hit";
+        else {
+            let sunk = checkSunkShip(cell);
+            if(sunk==1){
+                message = "sunk";
+            }
+            else
+                message = "hit";
+        }
     }
     waitForSocketConnection(ws, sendMoveReply(message));
-    if(message != "win")
-        changeTurn();
+    changeTurn();
+}
+
+function checkSunkShip(cell){
+    let sunk = 1;
+    cell = parseInt(cell);
+
+    for(let i=cell; Math.floor(i/10)>=0 && my_grid[i]!=0 && my_grid[i]!=3 ;i = i -10) { //check up
+        if (my_grid[i] == 1){
+            sunk=0;
+            return sunk;
+        }
+    }
+    for(let i=cell; Math.floor(i/10)<=9 && my_grid[i]!=0 && my_grid[i]!=3 ;i= i + 10) { //check down
+        if (my_grid[i] == 1){
+            sunk=0;
+            return sunk;
+        }
+    }
+    for(let i=cell; i%10 >= 0 && my_grid[i]!=0 && my_grid[i]!=3 ;i--) { //check left
+        if (my_grid[i] == 1){
+            sunk=0;
+            return sunk;
+        }
+    }
+    for(let i=cell; i%10 <= 9 && my_grid[i]!=0 && my_grid[i]!=3 ;i++) { //check right
+        if (my_grid[i] == 1){
+            sunk=0;
+            return sunk;
+        }
+    }
+    return sunk;
 }
 
 // gestisce il messaggio di feedback dopo un colpo sparato
@@ -409,17 +444,22 @@ function showMoveMsg(hit){
     message.setAttribute("id", "message");
     message_div.appendChild(message);
     grid_div.appendChild(message_div);
-    if (hit === 1) {
-        message_div.setAttribute("class", "hit");
-        message.innerHTML = "<h1>NAVE COLPITA!</h1>";
-        setTimeout(changeTurn, 1500);
-    } else if (hit === 0) {
+    if(hit === 0){
         message_div.setAttribute("class", "missed");
         message.innerHTML = "<h1>NAVE MANCATA!</h1>";
-        setTimeout(changeTurn, 1500);
-    } else if (hit === 2 || hit===3) {
+        setTimeout(changeTurn, 1000);
+    }
+    else if (hit === 1) {
         message_div.setAttribute("class", "hit");
-        if(hit===2) {
+        message.innerHTML = "<h1>NAVE COLPITA!</h1>";
+        setTimeout(changeTurn, 1000);
+    }     else if (hit === 2) {
+        message_div.setAttribute("class", "hit");
+        message.innerHTML = "<h1>NAVE COLPITA E AFFONDATA!</h1>";
+        setTimeout(changeTurn, 1000);
+    }else if (hit === 3 || hit===4) {
+        message_div.setAttribute("class", "hit");
+        if(hit===3) {
             message.innerHTML = "<h1>PARTITA FINITA</h1><h1>GIOCATORE "+ myself+ " VINCE!<br /><br /><h3>Premi NUOVA PARTITA per scegliere un nuovo sfidante</h3>";
         }
         else {
@@ -428,4 +468,17 @@ function showMoveMsg(hit){
         setTimeout(function (){window.location.href = "../chooseOpponent.jsp";}, 3000);
 
     }
+}
+
+function temporaryDiv(message, time){
+    let div = document.getElementById("alert");
+    div.setAttribute("class", "alert");
+    div.innerHTML = message;
+
+    setTimeout(cancelDiv, time);
+}
+function cancelDiv(){
+    let div = document.getElementById("alert");
+    div.setAttribute("class", "hidden");
+    div.innerHTML = "";
 }

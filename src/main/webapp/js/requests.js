@@ -41,7 +41,6 @@ ws.onmessage = function (event) {
                 document.getElementById("next").disabled = false;
                 document.getElementById("prev").disabled = false;
             }
-            console.log(online_users);
             addUserTable(data);
             //shuffle(online_users);
             break;
@@ -58,7 +57,6 @@ ws.onmessage = function (event) {
             break;
 
         case "ongame_user":
-            console.log("ONLINE USERS: " + online_users);
             ongame_users.push(data);
             updateUserTable(data, "on game");
             deleteRequestTable(data);
@@ -123,7 +121,6 @@ function previousUsers(){
     for(let i = start; i < val; i++) {
         addUserTable(online_users[(i % n + n) % n]);
         currentIndex = ((i-1) % n + n) % n;
-        console.log(currentIndex + " + " + i);
     }
     if(online_users.length <= 5)
     {
@@ -135,14 +132,12 @@ function previousUsers(){
 function nextUsers(){
 
     cleanTable();
-    console.log(online_users);
     let n = online_users.length;
     let val = currentIndex;
 
     for(let i = currentIndex; i < val + 5; i++) {
         addUserTable(online_users[(i % n + n) % n]);
         currentIndex = ((i+1) % n + n) % n;
-        console.log("I: " + i);
     }
     if(online_users.length <= 5)
     {
@@ -173,7 +168,6 @@ function cleanTable(){
 
 function addUserTable(user) {
     let table_body = document.getElementById("onlineUsers");
-    console.log(table_body.rows.length);
     if(table_body.rows.length == 5)
         return;
     let tr = document.createElement('tr');
@@ -202,7 +196,6 @@ function addUserTable(user) {
     td_score.innerHTML = "0";
     tr.setAttribute("id", user);
     table_body.appendChild(tr);
-    console.log(table_body.rows.length);
 }
 
 function updateUserTable(user, type){
@@ -336,13 +329,9 @@ function findUser(){
 
     let user = document.getElementById("userSearch").textContent;
 
-    console.log(online_users);
-    console.log(ongame_users);
-
     let table = document.createElement("table");
     table.setAttribute("id", "searchedUser");
 
-    console.log(document.getElementById("search-container"));
     document.getElementById("search-container").appendChild(table);
     let tr = document.createElement("tr");
     tr.setAttribute("id", "searched_"+user);

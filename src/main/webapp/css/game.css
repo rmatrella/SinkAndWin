@@ -122,6 +122,20 @@ rosse -> nave colpita
     background-color: lightblue;
 }
 
+.alert{
+    width: 40%;
+    padding: 15px 10px;
+    margin: 10px auto;
+    horiz-align: center;
+    vertical-align: center;
+    text-align: center;
+    padding: .75rem 1.25rem;
+    border-radius:.25rem;
+    color: #383d41;
+    background-color: #e2e3e5;
+    border-color:#d6d8db
+}
+
 
 /* CONSOLE */
 

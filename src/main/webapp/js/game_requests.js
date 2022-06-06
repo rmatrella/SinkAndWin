@@ -33,7 +33,7 @@ function registerUser () {
     myself = document.getElementById("loggedUsername").textContent;
     opponent = document.getElementById("opponentUsername").textContent;
     first = document.getElementById("firstTurn").textContent;
-    console.log(first);
+    console.log(myself);
     notifyOnGame();
     setUp();
     //sendWebSocket(JSON.stringify(new Message( "user_registration", "",myself, "WebSocket")));

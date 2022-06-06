@@ -15,11 +15,11 @@
 init_main() ->
   %%online_users:start_server(),
   io:fwrite("Server starts \n"),
-  Server = spawn(fun()-> main_loop([], []) end),
+  Server = spawn(fun()-> main_loop([]) end),
   register(sinkandwin_server, Server),
   io:fwrite("Server registered \n").
 
-main_loop(OnlineUsersList, OnGameUserList) ->
+main_loop(OnlineUsersList) ->
   io:fwrite("Main loop started \n"),
   receive
     {addUser, Username} ->
@@ -27,28 +27,25 @@ main_loop(OnlineUsersList, OnGameUserList) ->
       NewListUsers = OnlineUsersList ++ [Username], %% or lists:append(OnlineUsersList, [Username])
       %%%NewListUsers = online_users:add_users(Username),
       io:format("Online users : ~p\n", [NewListUsers]),
-      main_loop(NewListUsers, OnGameUserList);
+      main_loop(NewListUsers);
     {getUser, Username} ->
       notify_one({online_users, Username}, OnlineUsersList),
-      notify_one({ongame_users, Username}, OnGameUserList),
       io:format("Online users : ~p\n", [OnlineUsersList]),
-      io:format("On game user : ~p\n", [OnGameUserList]),
-      main_loop(OnlineUsersList, OnGameUserList);
+      main_loop(OnlineUsersList);
     {onGameUser, Username} ->
       NewListUsers = lists:delete(Username, OnlineUsersList),
       notify_all({onGameUser, Username}, OnlineUsersList),
-      NewOnGameUserList = OnGameUserList ++ [Username], %% or lists:append(OnlineUsersList, [Username])
       io:format("On game user : ~p\n", [Username]),
-      main_loop(NewListUsers, NewOnGameUserList);
+      main_loop(NewListUsers);
     {delUser, Username} ->
       NewListUsers = lists:delete(Username, OnlineUsersList),
       %NewOnGameUserList = lists:delete(Username, OnGameUserList),
       notify_all({delUser, Username}, NewListUsers),
       io:format("Online users : ~p\n", [NewListUsers]),
-      main_loop(NewListUsers, OnGameUserList);
+      main_loop(NewListUsers);
     _ -> ok
   end,
-  main_loop(OnlineUsersList, OnGameUserList).
+  main_loop(OnlineUsersList).
 
 
 notify_all(_, []) ->
@@ -71,9 +68,6 @@ notify_all({onGameUser,CurrentUser}, [First | Others]) ->
   notify_all({onGameUser, CurrentUser}, Others).
 
 notify_one({online_users,Username}, UsersList) ->
-  whereis(Username) ! jsx:encode(#{<<"type">> => <<"user_list">>, <<"data">> => UsersList});
-
-notify_one({ongame_users,Username}, UsersList) ->
-  whereis(Username) ! jsx:encode(#{<<"type">> => <<"ongame_list">>, <<"data">> => UsersList}).
+  whereis(Username) ! jsx:encode(#{<<"type">> => <<"user_list">>, <<"data">> => UsersList}).
 
 

@@ -1,26 +1,17 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: luanabussu
-  Date: 19/05/22
-  Time: 21:30
-  To change this template use File | Settings | File Templates.
---%>
-<%@ page import="it.unipi.dsmt.dto.User" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <!doctype html>
 <html lang="eng">
 <head>
     <title>Battleship</title>
     <link rel="stylesheet" type="text/css" href="../css/game.css">
     <meta charset="utf-8" />
-    <script src="../js/websocket.js"></script>
-    <script src="../js/game_requests.js"></script>
-    <script type="text/javascript" src="../js/battleship.js"></script>
+    <script src="../js/websocket.js?version=51"></script>
+    <script src="../js/game_requests.js?version=51"></script>
+    <script type="text/javascript" src="../js/battleship.js?version=51"></script>
 </head>
 
 <body>
 <%
-    String username = ((User)session.getAttribute("logUser")).getUsername();
+    String username = request.getParameter("myself");
     String opponent = request.getParameter("opponent");
     String first_turn = request.getParameter("first_turn");
 %>

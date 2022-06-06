@@ -32,9 +32,9 @@
 </h2>
 <a href="LogoutServlet" id="logout"><button>Logout</button></a>
 <div id="snippetContent">
-   <div class="containerTable" class="opponent">
+   <div class="containerTable" id="opponent">
        <h3 class="center"> Choose an opponent! </h3>
-       <table class="table" class="opponent" style="width: 1020px; min-height: 250px;">
+       <table class="table" style="width: 1020px; min-height: 250px;">
            <thead style="background-color: #9daccb;">
            <tr>
                <th>
@@ -62,7 +62,7 @@
    </div>
     <div class="containerTable">
         <h3 class="center"> Game requests received </h3>
-        <table class="table" id="request_table" style="width: 1020px; min-height: 250px;">
+        <table class="table" id="request_table" style="width: 700px; min-height: 250px;">
             <thead style="background-color: #9daccb;">
             <tr>
                 <th>
@@ -82,7 +82,7 @@
     </div>
     <div class="containerTable">
         <h3 class="center"> Game requests done</h3>
-        <table class="table" id="request_done_table" style="width: 1020px; min-height: 250px;">
+        <table class="table" id="request_done_table" style="width: 700px; min-height: 250px;">
             <thead style="background-color: #9daccb;">
             <tr>
                 <th>

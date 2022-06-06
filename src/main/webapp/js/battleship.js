@@ -359,14 +359,14 @@ function checkCell(cell, player){
         }
         if(win==1) {
             message = "win";
-            alert(opponent + " win\nPress ok to continue..");
             showMoveMsg(3);
         }
         else
             message = "hit";
     }
     waitForSocketConnection(ws, sendMoveReply(message));
-    changeTurn();
+    if(message != "win")
+        changeTurn();
 }
 
 // gestisce il messaggio di feedback dopo un colpo sparato
@@ -402,7 +402,7 @@ function showMoveMsg(hit){
         }
         else {
             message.innerHTML = "<h1>PARTITA FINITA</h1><h1>GIOCATORE "+ opponent + " VINCE!<br /><br /><h3>Premi NUOVA PARTITA per scegliere un nuovo sfidante</h3>";
-            window.location.href = "../chooseOpponent.jsp";
+            //window.location.href = "../chooseOpponent.jsp";
         }
 
         message_button.setAttribute("onClick", "window.location.href = \"../chooseOpponent.jsp\";");

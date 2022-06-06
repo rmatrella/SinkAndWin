@@ -16,9 +16,9 @@
 .containerTable{
     display: inline-block;
     float: left;
-    min-width: 1020px;
+    width: 700px;
     min-height: 250px;
-    margin-left: 15%;
+    margin-left: 2%;
 }
 
 .center{
@@ -72,9 +72,10 @@ img.icon {
     visibility: hidden;
 }
 
-.opponent{
+#opponent{
     min-width: 1020px;
     min-height: 250px;
+    margin-left: 18%;
 }
 
 #logout{
@@ -122,4 +123,8 @@ img.icon {
     border-radius: 10px;
     padding: 3% 10%;
     margin-top: 2%;
+}
+
+.arrow{
+    width: 25px;
 }

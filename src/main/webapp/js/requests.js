@@ -36,8 +36,13 @@ ws.onmessage = function (event) {
             break;
 
         case "add_user":
-            addUserTable(data);
             online_users.push(data);
+            if(online_users.length > 5) {
+                document.getElementById("next").disabled = false;
+                document.getElementById("prev").disabled = false;
+            }
+            console.log(online_users);
+            addUserTable(data);
             //shuffle(online_users);
             break;
 
@@ -53,12 +58,11 @@ ws.onmessage = function (event) {
             break;
 
         case "ongame_user":
-            index = online_users.indexOf(data);
-            online_users.splice(index, 1);
+            console.log("ONLINE USERS: " + online_users);
             ongame_users.push(data);
-            //deleteUserTable(data);
             updateUserTable(data, "on game");
             deleteRequestTable(data);
+            currentIndex = 0;
             break;
 
         case "ongame_list":
@@ -82,12 +86,12 @@ ws.onmessage = function (event) {
         case "accept_request":
             opponent = sender;
             //notifyOnGame();
-            location.href = "pages/battleship.jsp?opponent="+opponent+"&first_turn=true";
+            location.href = "pages/battleship.jsp?opponent="+opponent+"&myself="+myself+"&first_turn=true";
             break;
 
         case "info":
             if(data == "Request correctly accepted!") {
-                location.href = "pages/battleship.jsp?opponent="+opponent+"&first_turn=false";
+                location.href = "pages/battleship.jsp?opponent="+opponent+"&myself="+myself+"&first_turn=false";
             }
             break;
 
@@ -110,25 +114,40 @@ function previousUsers(){
 
     cleanTable();
 
-    var n = online_users.length;
-    var val = currentIndex;
+    let n = online_users.length;
+    let val = currentIndex;
+    let start = currentIndex - 5;
+    if(online_users.length < 5)
+        start = currentIndex - online_users.length;
 
-    for(var i = currentIndex-5; i < val; i++) {
+    for(let i = start; i < val; i++) {
         addUserTable(online_users[(i % n + n) % n]);
         currentIndex = ((i-1) % n + n) % n;
+        console.log(currentIndex + " + " + i);
+    }
+    if(online_users.length <= 5)
+    {
+        document.getElementById("next").disabled = true;
+        document.getElementById("prev").disabled = true;
     }
 }
 
 function nextUsers(){
 
     cleanTable();
+    console.log(online_users);
+    let n = online_users.length;
+    let val = currentIndex;
 
-    var n = online_users.length;
-    var val = currentIndex;
-
-    for(var i = currentIndex; i < val + 5; i++) {
+    for(let i = currentIndex; i < val + 5; i++) {
         addUserTable(online_users[(i % n + n) % n]);
         currentIndex = ((i+1) % n + n) % n;
+        console.log("I: " + i);
+    }
+    if(online_users.length <= 5)
+    {
+        document.getElementById("next").disabled = true;
+        document.getElementById("prev").disabled = true;
     }
 }
 
@@ -154,7 +173,9 @@ function cleanTable(){
 
 function addUserTable(user) {
     let table_body = document.getElementById("onlineUsers");
-
+    console.log(table_body.rows.length);
+    if(table_body.rows.length == 5)
+        return;
     let tr = document.createElement('tr');
     let td_username = tr.appendChild(document.createElement('td'));
     let td_status = tr.appendChild(document.createElement("td"));
@@ -181,11 +202,14 @@ function addUserTable(user) {
     td_score.innerHTML = "0";
     tr.setAttribute("id", user);
     table_body.appendChild(tr);
+    console.log(table_body.rows.length);
 }
 
 function updateUserTable(user, type){
 
     let row = document.getElementById(user);
+    if(row == null)
+        return;
     //let text = document.createTextNode("On game");
     if(type == "on game") {
         row.getElementsByTagName("td")[1].lastChild.nodeValue = "On game";

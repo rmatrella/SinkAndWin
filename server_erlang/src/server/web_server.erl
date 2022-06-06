@@ -55,7 +55,6 @@ websocket_handle({text, Frame}, State) ->
           Response = jsx:encode(#{<<"type">> => <<"error">>,
             <<"sender">> => <<"WebSocket">>,
             <<"data">> => <<"User not logged!">>}),
-
           NewState = State;
         true ->
           Name = element(2, PID),

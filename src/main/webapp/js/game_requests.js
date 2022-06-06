@@ -20,8 +20,15 @@ ws.onmessage = function (event) {
         case "game_move":
             checkCell(data, sender);
             break;
+
         case "move_reply":
             moveReply(data);
+            break;
+
+        case "surrender":
+            alert(sender + " has given up!");
+            setTimeout(function(){location.href = "../chooseOpponent.jsp";}, 3000);
+            //location.href = "../chooseOpponent.js";
             break;
 
         default:
@@ -35,7 +42,6 @@ function registerUser () {
     first = document.getElementById("firstTurn").textContent;
     notifyOnGame();
     setUp();
-    //sendWebSocket(JSON.stringify(new Message( "user_registration", "",myself, "WebSocket")));
 }
 
 function sendMove(cell){

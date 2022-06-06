@@ -333,6 +333,7 @@ function moveReply(reply){
     if(move==null)
         return;
     let cell = document.getElementById(move);
+    console.log(move);
     switch(reply){
         case "hit":
             opponent_grid[move] = 2;
@@ -348,6 +349,11 @@ function moveReply(reply){
             opponent_grid[move] = 2;
             cell.setAttribute("class", "hit");
             showMoveMsg(2);
+            console.log(move);
+            let dim = checkSunkShipType(move);
+            console.log(dim);
+            let quanti = document.getElementById("dim_"+dim).textContent;
+            document.getElementById("dim_"+dim).textContent = quanti-1;
             break;
         case "win":
             showMoveMsg(3);
@@ -400,6 +406,50 @@ function checkCell(cell, player){
     }
     waitForSocketConnection(ws, sendMoveReply(message));
     changeTurn();
+}
+
+function checkSunkShipType(cell) {
+
+    let dim = 1;
+    cell = parseInt(cell);
+    console.log(cell);
+    if (opponent_grid[cell - 10] == 2)
+    {
+        console.log(opponent_grid[cell - 10] );
+        for (let i = (cell-10); Math.floor(i / 10) >= 0 && opponent_grid[i] == 2; i = i - 10) //check up
+        {
+            console.log(i);
+            dim++;
+        }
+    }
+    if (opponent_grid[cell + 10] == 2)
+    {
+        console.log(opponent_grid[cell + 10] );
+        for (let i = (cell+10); Math.floor(i / 10) <= 9 && opponent_grid[i] == 2 ; i = i + 10) {
+            console.log(i);
+            dim++;
+        }
+    }
+    if (opponent_grid[cell - 1] == 2)
+    {
+        console.log(opponent_grid[cell - 1] );
+
+        for(let i= (cell-1); i%10 >= 0 && opponent_grid[i] == 2 ;i--) {
+            console.log(i);
+            dim++;
+        }
+    }
+    if (opponent_grid[cell + 1] == 2)
+    {
+        console.log(opponent_grid[cell + 1] );
+
+        for(let i= (cell+1); i%10 <= 9 && opponent_grid[i] ==2 ;i++) {
+            console.log(i);
+            dim++;
+        }
+    }
+    console.log(dim);
+    return dim;
 }
 
 function checkSunkShip(cell){
@@ -477,8 +527,22 @@ function temporaryDiv(message, time){
 
     setTimeout(cancelDiv, time);
 }
-function cancelDiv(){
+function cancelDiv() {
     let div = document.getElementById("alert");
     div.setAttribute("class", "hidden");
     div.innerHTML = "";
 }
+function surrender() {
+    let p = document.getElementById("turn");
+
+    if (p.innerHTML != "It's your turn")
+        return;
+
+    let opponent = document.getElementById("opponentUsername").textContent;
+    let username = document.getElementById("loggedUsername").textContent;
+    sendWebSocket(JSON.stringify(new Message("surrender", "", username, opponent)));
+    alert("You have surrender! ");
+    setTimeout(function () {location.href = "../chooseOpponent.jsp";}, 3000);
+}
+
+

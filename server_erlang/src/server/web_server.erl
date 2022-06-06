@@ -106,6 +106,21 @@ websocket_handle({text, Frame}, State) ->
       Response = jsx:encode(#{<<"type">> => <<"info">>,
         <<"sender">> => <<"WebSocket">>,
         <<"data">> => <<"Response correctly sent!">>});
+    surrender ->
+      SenderPID = whereis(Receiver),
+      if
+        SenderPID =/= undefined ->
+          SenderPID ! Frame,
+          NewState = {surrender},
+          Response = jsx:encode(#{<<"type">> => <<"info">>,
+            <<"sender">> => <<"WebSocket">>,
+            <<"text">> => <<"Message sent!">>});
+        true ->
+          NewState = State,
+          Response = jsx:encode(#{<<"type">> => <<"error">>,
+            <<"sender">> => <<"WebSocket">>,
+            <<"text">> => <<"Receiver unavailable!">>})
+      end;
     _ ->
       NewState = State,
       Response = jsx:encode(#{<<"type">> => <<"nothing">>,
@@ -127,6 +142,9 @@ websocket_info(close, State) ->
 websocket_info(Info, State) ->
   {[{text, Info}], State}. %% Returns this message to the client
 
+terminate (TerminateReason, _Req, {surrender}) ->
+  io:format("Surrender: ~p\n", [self()]),
+  io:format("Terminate reason: ~p\n", [TerminateReason]);
 
 terminate ({remote,_,_}, _Req, _) ->
   Username = element(2, erlang:process_info(self(), registered_name)),

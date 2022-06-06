@@ -203,3 +203,10 @@ a:hover.button {
 #message_button {
     margin: 20px;
 }
+
+#surrender{
+    margin-left: 75%;
+    border-radius: 5px;
+    background-color: lightslategrey;
+    color: white;
+}

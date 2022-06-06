@@ -168,6 +168,7 @@ function cleanTable(){
 
 function addUserTable(user) {
     let table_body = document.getElementById("onlineUsers");
+
     if(table_body.rows.length == 5)
         return;
     let tr = document.createElement('tr');

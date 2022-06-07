@@ -508,15 +508,20 @@ function showMoveMsg(hit){
         message.innerHTML = "<h1>NAVE COLPITA E AFFONDATA!</h1>";
         setTimeout(changeTurn, 1000);
     }else if (hit === 3 || hit===4) {
+        let button = document.createElement("a");
+        button.setAttribute("id", "hit_message_button");
+        button.setAttribute("class", "button");
+        button.innerHTML = "NUOVA PARTITA!";
         message_div.setAttribute("class", "hit");
         if(hit===3) {
             message.innerHTML = "<h1>PARTITA FINITA</h1><h1>GIOCATORE "+ myself+ " VINCE!<br /><br /><h3>Premi NUOVA PARTITA per scegliere un nuovo sfidante</h3>";
+            button.setAttribute("href", "UpdatePointsServlet?winner="+myself);
         }
         else {
             message.innerHTML = "<h1>PARTITA FINITA</h1><h1>GIOCATORE "+ opponent + " VINCE!<br /><br /><h3>Premi NUOVA PARTITA per scegliere un nuovo sfidante</h3>";
+            button.setAttribute("href", "UpdatePointsServlet?winner="+opponent);
         }
-        setTimeout(function (){window.location.href = "../chooseOpponent.jsp";}, 3000);
-
+        grid_div.appendChild(button);
     }
 }
 

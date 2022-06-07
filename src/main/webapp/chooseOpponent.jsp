@@ -19,17 +19,19 @@
 <script src="js/websocket.js"></script>
 <script src="js/requests.js"></script>
 <%
-    /*String user = (String) session.getAttribute("user");
-    System.out.println("user: " + user);
+    User user = (User) session.getAttribute("logUser");
+    /*System.out.println("user: " + user);
     String exists = (String) session.getAttribute("exists");
     System.out.println("exists: " + exists);*/
 %>
 <script> waitForSocketConnection(ws, registerUser);</script>
 
 <h2 class="center-text"> Welcome
-    <span id="loggedUsername"><%
-        out.print(((User)session.getAttribute("logUser")).getUsername());%></span>!
+    <span id="loggedUsername"><%=user.getUsername()%></span>!
 </h2>
+<h3 class="center-text"> Your points:
+    <span id="points"><%=user.getPoints()%></span>
+</h3>
 <a href="LogoutServlet" id="logout"><button>Logout</button></a>
 <div id="snippetContent">
    <div class="containerTable" id="opponent">

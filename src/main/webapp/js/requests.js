@@ -84,12 +84,12 @@ ws.onmessage = function (event) {
         case "accept_request":
             opponent = sender;
             //notifyOnGame();
-            location.href = "pages/battleship.jsp?opponent="+opponent+"&myself="+myself+"&first_turn=true";
+            location.href = "battleship.jsp?opponent="+opponent+"&myself="+myself+"&first_turn=true";
             break;
 
         case "info":
             if(data == "Request correctly accepted!") {
-                location.href = "pages/battleship.jsp?opponent="+opponent+"&myself="+myself+"&first_turn=false";
+                location.href = "battleship.jsp?opponent="+opponent+"&myself="+myself+"&first_turn=false";
             }
             break;
 

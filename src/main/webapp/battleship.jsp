@@ -2,11 +2,11 @@
 <html lang="eng">
 <head>
     <title>Battleship</title>
-    <link rel="stylesheet" type="text/css" href="../css/game.css">
+    <link rel="stylesheet" type="text/css" href="css/game.css">
     <meta charset="utf-8" />
-    <script src="../js/websocket.js?version=51"></script>
-    <script src="../js/game_requests.js?version=51"></script>
-    <script type="text/javascript" src="../js/battleship.js?version=51"></script>
+    <script src="js/websocket.js?version=51"></script>
+    <script src="js/game_requests.js?version=51"></script>
+    <script type="text/javascript" src="js/battleship.js?version=51"></script>
 </head>
 
 <body>

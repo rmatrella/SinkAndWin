@@ -34,25 +34,17 @@ public class HomeServlet extends HttpServlet {
 
             if(user == null)
             {
-                //response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 PrintWriter out = response.getWriter();
                 out.println("<script type=\"text/javascript\">");
                 out.println("alert('Username or password wrong, please try again!');");
                 out.println("document.location.href='./index.jsp';");
                 out.println("</script>");
                 out.close();
-                /*request.getSession().setAttribute("loginError", "Username or password wrong, please try again!");
-                request.getRequestDispatcher("./index.jsp").include(request, response);*/
 
             }
             else
             {
                 session.setAttribute("logUser", user);
-                 //Utils.goTo("index.jsp", request, response);
-                //PrintWriter out = response.getWriter();
-                /*out.println("<script>");
-                out.println("waitForSocketConnection(ws, " + user.getUsername() + ");");
-                out.println("</script>");*/
                 Utils.goTo("chooseOpponent.jsp", request, response);
             }
         }else{ //registration part
@@ -76,7 +68,7 @@ public class HomeServlet extends HttpServlet {
                 out.println("</script>");
                 out.close();
                 db.registerUser(username, password);
-                session.setAttribute("logUser", username);
+                session.setAttribute("logUser", new User(username, password, 0));
                 Utils.goTo("index.jsp", request, response);
             }
         }

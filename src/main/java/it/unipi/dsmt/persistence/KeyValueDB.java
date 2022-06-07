@@ -125,5 +125,14 @@ public class KeyValueDB {
         }
         return "false";
     }
+
+    public void updatePoints(String username, int points){
+        String key = "user:" + username + ":points";
+        putValue(key, Integer.toString(points));
+    }
+    public String getPoints(String username){
+        String key = "user:" + username + ":points";
+        return getValue(key);
+    }
 }
 

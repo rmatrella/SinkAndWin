@@ -547,7 +547,7 @@ function surrender() {
     let username = document.getElementById("loggedUsername").textContent;
     sendWebSocket(JSON.stringify(new Message("surrender", "", username, opponent)));
     alert("You have surrender! ");
-    setTimeout(function () {location.href = "../chooseOpponent.jsp";}, 3000);
+    setTimeout(function () {location.href = "chooseOpponent.jsp";}, 3000);
 }
 
 

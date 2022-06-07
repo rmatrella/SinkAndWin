@@ -27,7 +27,7 @@ ws.onmessage = function (event) {
 
         case "surrender":
             alert(sender + " has given up!");
-            setTimeout(function(){location.href = "../chooseOpponent.jsp";}, 3000);
+            setTimeout(function(){location.href = "chooseOpponent.jsp";}, 3000);
             //location.href = "../chooseOpponent.js";
             break;
 

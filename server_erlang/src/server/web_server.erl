@@ -151,7 +151,7 @@ terminate ({remote,_,_}, _Req, _) ->
   io:format("*** Connection with ~p closed\n", [Username]),
   sinkandwin_server ! {delUser, Username};
 
-terminate (TerminateReason, _Req, _) ->
+terminate (TerminateReason, _Req, {}) ->
   io:format("*** Termination: ~p\n", [TerminateReason]),
   Username = element(2, erlang:process_info(self(), registered_name)),
   io:format("*** Process: ~p\n", [Username]).

@@ -84,12 +84,12 @@ ws.onmessage = function (event) {
         case "accept_request":
             opponent = sender;
             //notifyOnGame();
-            location.href = "battleship.jsp?opponent="+opponent+"&myself="+myself+"&first_turn=true";
+            location.href = "./battleship.jsp?opponent="+opponent+"&myself="+myself+"&first_turn=true";
             break;
 
         case "info":
             if(data == "Request correctly accepted!") {
-                location.href = "battleship.jsp?opponent="+opponent+"&myself="+myself+"&first_turn=false";
+                location.href = "./battleship.jsp?opponent="+opponent+"&myself="+myself+"&first_turn=false";
             }
             break;
 
@@ -176,7 +176,6 @@ function addUserTable(user) {
     let td_status = tr.appendChild(document.createElement("td"));
     let img = td_status.appendChild(document.createElement("img"));
     //let td_status = span.appendChild(document.createElement('td'));
-    let td_score = tr.appendChild(document.createElement('td'));
     let td_button = tr.appendChild(document.createElement('td'));
     let button = td_button.appendChild(document.createElement("button"));
     //let span = td_status.appendChild(document.createElement("span"));
@@ -194,7 +193,6 @@ function addUserTable(user) {
     //td_status.innerHTML = "Online";
     button.innerHTML = "Send Request";
     td_username.innerHTML = user;
-    td_score.innerHTML = "0";
     tr.setAttribute("id", user);
     table_body.appendChild(tr);
 }
@@ -266,12 +264,10 @@ function addRequestDoneTable(user){
 
     let tr = document.createElement('tr');
     let td_username = tr.appendChild(document.createElement('td'));
-    let td_score = tr.appendChild(document.createElement('td'));
     let td_button = tr.appendChild(document.createElement('td'));
     let button = td_button.appendChild(document.createElement("button"));
 
     td_username.setAttribute("class","center");
-    td_score.setAttribute("class","center");
     td_button.setAttribute("class","center");
 
     button.setAttribute("type","button");
@@ -281,7 +277,6 @@ function addRequestDoneTable(user){
 
     button.innerHTML = "Cancel Request";
     td_username.innerHTML = user;
-    td_score.innerHTML = "0";
     tr.setAttribute("id", "cancel_"+user);
     table_body.appendChild(tr);
 }
@@ -292,12 +287,10 @@ function addReqTable(user) {
 
     let tr = document.createElement('tr');
     let td_username = tr.appendChild(document.createElement('td'));
-    let td_score = tr.appendChild(document.createElement('td'));
     let td_button = tr.appendChild(document.createElement('td'));
     let button = td_button.appendChild(document.createElement("button"));
 
     td_username.setAttribute("class","center");
-    td_score.setAttribute("class","center");
     td_button.setAttribute("class","center");
 
     button.setAttribute("type","button");
@@ -307,7 +300,6 @@ function addReqTable(user) {
 
     button.innerHTML = "Accept Request";
     td_username.innerHTML = user;
-    td_score.innerHTML = "0";
     tr.setAttribute("id", "request_"+user);
     table_body.appendChild(tr);
 }
@@ -352,10 +344,8 @@ function findUser(){
     let img = span.appendChild(document.createElement("img"));
     img.setAttribute("class", "icon");
     tr.appendChild(img);
-    let td_score = tr.appendChild(document.createElement('td'));
 
     td_username.innerHTML = user;
-    td_score.innerHTML = "0";
 
     if(document.getElementById(user) == null && online_users.includes(user))
     {

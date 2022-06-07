@@ -2,8 +2,7 @@ package it.unipi.dsmt.persistence;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import it.unipi.dsmt.dto.User;
 import org.iq80.leveldb.*;
@@ -133,6 +132,52 @@ public class KeyValueDB {
     public String getPoints(String username){
         String key = "user:" + username + ":points";
         return getValue(key);
+    }
+
+    public static HashMap<String, Integer> sortByValue(HashMap<String, Integer> hm)
+    {
+        // Create a list from elements of HashMap
+        List<Map.Entry<String, Integer> > list =
+                new LinkedList<Map.Entry<String, Integer> >(hm.entrySet());
+
+        // Sort the list
+        Collections.sort(list, new Comparator<Map.Entry<String, Integer> >() {
+            public int compare(Map.Entry<String, Integer> o1,
+                               Map.Entry<String, Integer> o2)
+            {
+                return (o2.getValue()).compareTo(o1.getValue());
+            }
+        });
+
+        // put data from sorted list to hashmap
+        HashMap<String, Integer> temp = new LinkedHashMap<String, Integer>();
+        for (Map.Entry<String, Integer> aa : list) {
+            temp.put(aa.getKey(), aa.getValue());
+        }
+        return temp;
+    }
+
+    public Map<String, Integer> getRank() {
+
+        HashMap<String, Integer> users = new HashMap<>();
+
+        try (DBIterator iterator = db.iterator()) {
+            for (iterator.seekToFirst(); iterator.hasNext(); iterator.next()) {
+                String key = asString(iterator.peekNext().getKey());
+                String value = asString(iterator.peekNext().getValue());
+
+                if(key.endsWith("points")) {
+                    String[] us = key.split(":");
+                    users.put(us[1], Integer.parseInt(value));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(users);
+        System.out.println("SORT USERS:" + sortByValue(users));
+        return sortByValue(users);
     }
 }
 

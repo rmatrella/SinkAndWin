@@ -13,13 +13,13 @@
 <html>
 <head>
     <title>Play game</title>
-    <link href="css/chooseOpponent.css" rel="stylesheet" type="text/css"/>
+    <link href="css/chooseOpponent.css?version=51" rel="stylesheet" type="text/css"/>
 </head>
 <body>
-<script src="js/websocket.js"></script>
-<script src="js/requests.js"></script>
+<script src="js/websocket.js?version=51"></script>
+<script src="js/requests.js?version=51"></script>
 <%
-    User user = (User) session.getAttribute("logUser");
+    //User user = (User) session.getAttribute("logUser");
     /*System.out.println("user: " + user);
     String exists = (String) session.getAttribute("exists");
     System.out.println("exists: " + exists);*/
@@ -27,16 +27,21 @@
 <script> waitForSocketConnection(ws, registerUser);</script>
 
 <h2 class="center-text"> Welcome
-    <span id="loggedUsername"><%=user.getUsername()%></span>!
+    <span id="loggedUsername"><%
+        User user = (User)session.getAttribute("logUser");
+        out.print(user.getUsername());
+        KeyValueDB keyValueDB = KeyValueDB.getInstance();
+        Map<String, Integer> bestplayers = keyValueDB.getRank();
+        %></span>!
 </h2>
 <h3 class="center-text"> Your points:
     <span id="points"><%=user.getPoints()%></span>
 </h3>
 <a href="LogoutServlet" id="logout"><button>Logout</button></a>
 <div id="snippetContent">
-   <div class="containerTable" id="opponent">
+   <div class="containerTable" id="opponent" style="float:left;">
        <h3 class="center"> Choose an opponent! </h3>
-       <table class="table" style="width: 1020px; min-height: 250px;">
+       <table class="table" style="width: 700px; min-height: 250px;">
            <thead style="background-color: #9daccb;">
            <tr>
                <th>
@@ -44,9 +49,6 @@
                </th>
                <th class="text-center">
                    <span>Status</span>
-               </th>
-               <th class="text-center">
-                   <span>Points</span>
                </th>
                <th class="text-center">
                    <span>Send Request</span>
@@ -62,16 +64,42 @@
            <div class="clear"></div>
        </div>
    </div>
-    <div class="containerTable">
+    <div class="containerTable" style="float: right;">
+        <h3 class="center"> Best players </h3>
+        <table class="table" style="width: 700px; min-height: 250px;">
+            <thead style="background-color: #9daccb;">
+            <tr>
+                <th>
+                    <span>Rank</span>
+                </th>
+                <th>
+                    <span>User</span>
+                </th>
+                <th>
+                    <span>Points</span>
+                </th>
+            </tr>
+            </thead>
+            <tbody id="userRank" style="background: #9daccb;">
+            <%
+                int i = 1;
+                for (Map.Entry<String, Integer> players : bestplayers.entrySet()) {
+                    out.print("<tr><td class='center'>" + i + "</td><td class='center'>" + players.getKey() + "</td><td class='center'>" + players.getValue() + "</td></tr>");
+                    i++;
+                    if(i >= 6)
+                        break;
+                }
+            %>
+            </tbody>
+        </table>
+    </div>
+    <div class="containerTable" id="requestDone">
         <h3 class="center"> Game requests received </h3>
         <table class="table" id="request_table" style="width: 700px; min-height: 250px;">
             <thead style="background-color: #9daccb;">
             <tr>
                 <th>
                     <span>User</span>
-                </th>
-                <th>
-                    <span>Points</span>
                 </th>
                 <th>
                     <span>Accept Request</span>
@@ -82,16 +110,13 @@
             </tbody>
         </table>
     </div>
-    <div class="containerTable">
+    <div class="containerTable" style="float: left;">
         <h3 class="center"> Game requests done</h3>
         <table class="table" id="request_done_table" style="width: 700px; min-height: 250px;">
             <thead style="background-color: #9daccb;">
             <tr>
                 <th>
                     <span>User</span>
-                </th>
-                <th>
-                    <span>Points</span>
                 </th>
                 <th>
                     <span>Cancel Request</span>

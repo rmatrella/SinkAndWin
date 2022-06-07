@@ -333,7 +333,7 @@ function moveReply(reply){
     if(move==null)
         return;
     let cell = document.getElementById(move);
-    console.log(move);
+
     switch(reply){
         case "hit":
             opponent_grid[move] = 2;
@@ -349,9 +349,7 @@ function moveReply(reply){
             opponent_grid[move] = 2;
             cell.setAttribute("class", "hit");
             showMoveMsg(2);
-            console.log(move);
             let dim = checkSunkShipType(move);
-            console.log(dim);
             let quanti = document.getElementById("dim_"+dim).textContent;
             document.getElementById("dim_"+dim).textContent = quanti-1;
             break;

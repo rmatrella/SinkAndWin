@@ -13,39 +13,41 @@
 -export([init_main/0]).
 
 init_main() ->
-  %%online_users:start_server(),
+  gen_server_online_users:start_server(),
   io:fwrite("Server starts \n"),
-  Server = spawn(fun()-> main_loop([]) end),
+  Server = spawn(fun()-> main_loop() end),
   register(sinkandwin_server, Server),
   io:fwrite("Server registered \n").
 
-main_loop(OnlineUsersList) ->
+main_loop() ->
   io:fwrite("Main loop started \n"),
   receive
     {addUser, Username} ->
+      OnlineUsersList = gen_server_online_users:add_user(Username),
       notify_all({addUser,Username}, OnlineUsersList),
-      NewListUsers = OnlineUsersList ++ [Username], %% or lists:append(OnlineUsersList, [Username])
+      %%NewListUsers = OnlineUsersList ++ [Username], %% or lists:append(OnlineUsersList, [Username])
       %%%NewListUsers = online_users:add_users(Username),
-      io:format("Online users : ~p\n", [NewListUsers]),
-      main_loop(NewListUsers);
-    {getUser, Username} ->
-      notify_one({online_users, Username}, OnlineUsersList),
       io:format("Online users : ~p\n", [OnlineUsersList]),
-      main_loop(OnlineUsersList);
+      main_loop();
+    {getUser, Username} ->
+      OnlineUsersList = gen_server_online_users:get_users(),
+      io:format("Online users : ~p\n", [OnlineUsersList]),
+      notify_one({online_users, Username}, OnlineUsersList),
+      main_loop();
     {onGameUser, Username} ->
-      NewListUsers = lists:delete(Username, OnlineUsersList),
+      OnlineUsersList = gen_server_online_users:delete_user(Username),
       notify_all({onGameUser, Username}, OnlineUsersList),
       io:format("On game user : ~p\n", [Username]),
-      main_loop(NewListUsers);
+      main_loop();
     {delUser, Username} ->
-      NewListUsers = lists:delete(Username, OnlineUsersList),
+      OnlineUsersList = gen_server_online_users:delete_user(Username),
       %NewOnGameUserList = lists:delete(Username, OnGameUserList),
-      notify_all({delUser, Username}, NewListUsers),
-      io:format("Online users : ~p\n", [NewListUsers]),
-      main_loop(NewListUsers);
+      notify_all({delUser, Username}, OnlineUsersList),
+      io:format("Online users : ~p\n", [OnlineUsersList]),
+      main_loop();
     _ -> ok
   end,
-  main_loop(OnlineUsersList).
+  main_loop().
 
 
 notify_all(_, []) ->
@@ -58,7 +60,11 @@ notify_all({addUser,CurrentUser}, [First | Others]) ->
   notify_all({addUser, CurrentUser}, Others);
 
 notify_all({delUser,CurrentUser}, [First | Others]) ->
-  whereis(First) ! jsx:encode(#{<<"type">> => <<"delete_user">>,<<"data">> => CurrentUser}),
+  User = whereis(First),
+  if User =/= undefined ->
+    whereis(First) ! jsx:encode(#{<<"type">> => <<"delete_user">>,<<"data">> => CurrentUser});
+    true -> ok
+  end,
   notify_all({delUser, CurrentUser}, Others);
 
 notify_all({onGameUser,CurrentUser}, [First | Others]) ->

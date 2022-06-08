@@ -26,9 +26,11 @@ ws.onmessage = function (event) {
             break;
 
         case "surrender":
-            alert(sender + " has given up!");
-            setTimeout(function(){location.href = "chooseOpponent.jsp";}, 3000);
-            //location.href = "../chooseOpponent.js";
+            showMoveMsg(6);
+            break;
+
+        case "opponent_disconnected":
+            showMoveMsg(7);
             break;
 
         default:
@@ -53,5 +55,5 @@ function sendMoveReply(reply){
 }
 
 function notifyOnGame(){
-    sendWebSocket(JSON.stringify(new Message("ongame_user", "", myself, "WebSocket")));
+    sendWebSocket(JSON.stringify(new Message("ongame_user", opponent, myself, "WebSocket")));
 }

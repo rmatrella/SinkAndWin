@@ -410,10 +410,9 @@ function checkSunkShipType(cell) {
 
     let dim = 1;
     cell = parseInt(cell);
-    console.log(cell);
+
     if (opponent_grid[cell - 10] == 2)
     {
-        console.log(opponent_grid[cell - 10] );
         for (let i = (cell-10); Math.floor(i / 10) >= 0 && opponent_grid[i] == 2; i = i - 10) //check up
         {
             console.log(i);
@@ -422,7 +421,6 @@ function checkSunkShipType(cell) {
     }
     if (opponent_grid[cell + 10] == 2)
     {
-        console.log(opponent_grid[cell + 10] );
         for (let i = (cell+10); Math.floor(i / 10) <= 9 && opponent_grid[i] == 2 ; i = i + 10) {
             console.log(i);
             dim++;
@@ -430,8 +428,6 @@ function checkSunkShipType(cell) {
     }
     if (opponent_grid[cell - 1] == 2)
     {
-        console.log(opponent_grid[cell - 1] );
-
         for(let i= (cell-1); i%10 >= 0 && opponent_grid[i] == 2 ;i--) {
             console.log(i);
             dim++;
@@ -439,14 +435,12 @@ function checkSunkShipType(cell) {
     }
     if (opponent_grid[cell + 1] == 2)
     {
-        console.log(opponent_grid[cell + 1] );
-
         for(let i= (cell+1); i%10 <= 9 && opponent_grid[i] ==2 ;i++) {
             console.log(i);
             dim++;
         }
     }
-    console.log(dim);
+
     return dim;
 }
 
@@ -494,30 +488,53 @@ function showMoveMsg(hit){
     grid_div.appendChild(message_div);
     if(hit === 0){
         message_div.setAttribute("class", "missed");
-        message.innerHTML = "<h1>NAVE MANCATA!</h1>";
+        message.innerHTML = "<h1>MISSED SHIP!</h1>";
         setTimeout(changeTurn, 1000);
     }
     else if (hit === 1) {
         message_div.setAttribute("class", "hit");
-        message.innerHTML = "<h1>NAVE COLPITA!</h1>";
+        message.innerHTML = "<h1>SHIP HIT!</h1>";
         setTimeout(changeTurn, 1000);
     }     else if (hit === 2) {
         message_div.setAttribute("class", "hit");
-        message.innerHTML = "<h1>NAVE COLPITA E AFFONDATA!</h1>";
+        message.innerHTML = "<h1>SHIP HIT AND SUNK!</h1>";
         setTimeout(changeTurn, 1000);
-    }else if (hit === 3 || hit===4) {
+    }else{
         let button = document.createElement("a");
         button.setAttribute("id", "hit_message_button");
         button.setAttribute("class", "button");
-        button.innerHTML = "NUOVA PARTITA!";
+        button.innerHTML = "NEW GAME!";
         message_div.setAttribute("class", "hit");
         if(hit===3) {
-            message.innerHTML = "<h1>PARTITA FINITA</h1><h1>GIOCATORE "+ myself+ " VINCE!<br /><br /><h3>Premi NUOVA PARTITA per scegliere un nuovo sfidante</h3>";
+            message.innerHTML = "<h1>END GAME</h1><h1>PLAYER "+ myself+ " WINS!<br /><br /><h3>Click NEW GAME to choose another opponent</h3>";
             button.setAttribute("href", "UpdatePointsServlet?winner="+myself);
         }
-        else {
-            message.innerHTML = "<h1>PARTITA FINITA</h1><h1>GIOCATORE "+ opponent + " VINCE!<br /><br /><h3>Premi NUOVA PARTITA per scegliere un nuovo sfidante</h3>";
+        else if(hit == 4) {
+            message.innerHTML = "<h1>END GAME</h1><h1>PLAYER "+ opponent + " WINS!<br /><br /><h3>Click NEW GAME to choose another opponent</h3>";
             button.setAttribute("href", "UpdatePointsServlet?winner="+opponent);
+        }
+        else{
+            let p = document.getElementById("turn");
+            let opponent = document.getElementById("opponentUsername").textContent;
+            let username = document.getElementById("loggedUsername").textContent;
+
+            if(hit == 5) {
+                if (p.innerHTML != "It's your turn")
+                    return;
+                sendWebSocket(JSON.stringify(new Message("surrender", "", username, opponent)));
+                message.innerHTML = "<h1>END GAME</h1><h1>YOU HAVE SURRENDER!<br /><br /><h3>Click NEW GAME to choose another opponent</h3>";
+            }else if(hit == 6){
+                message.innerHTML = "<h1>END GAME</h1><h1>PLAYER "+ opponent + " WINS!<br /><br /><h3>Click NEW GAME to choose another opponent</h3>";
+            }
+            else if(hit == 7)
+            {
+                message.innerHTML = "<h1>END GAME</h1><h1>PLAYER "+ opponent + " DISCONNECTED! YOU WIN!<br /><br /><h3>Click NEW GAME to choose another opponent</h3>";
+            }
+            if(hit == 7)
+                button.setAttribute("href", "UpdatePointsServlet?winner="+myself);
+            else
+                button.setAttribute("href", "UpdatePointsServlet?winner="+opponent);
+            clearInterval(timer_id);
         }
         grid_div.appendChild(button);
     }
@@ -545,7 +562,7 @@ function surrender() {
     let username = document.getElementById("loggedUsername").textContent;
     sendWebSocket(JSON.stringify(new Message("surrender", "", username, opponent)));
     alert("You have surrender! ");
-    setTimeout(function () {location.href = "chooseOpponent.jsp";}, 3000);
+    setTimeout(function () {location.href = "UpdatePointsServlet?winner="+opponent;}, 3000);
 }
 
 

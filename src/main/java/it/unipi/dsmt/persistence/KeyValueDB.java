@@ -175,8 +175,6 @@ public class KeyValueDB {
             e.printStackTrace();
         }
 
-        System.out.println(users);
-        System.out.println("SORT USERS:" + sortByValue(users));
         return sortByValue(users);
     }
 }

@@ -30,6 +30,7 @@ websocket_handle({text, Frame}, State) ->
   Sender = binary_to_atom(maps:get(<<"sender">>, Json)),
   Receiver = binary_to_atom(maps:get(<<"receiver">>, Json)),
   Type = binary_to_atom(maps:get(<<"type">>, Json)),
+  Data =  binary_to_atom(maps:get(<<"data">>, Json)),
   case Type of
     user_registration ->
       SenderPID = whereis(Sender),
@@ -72,7 +73,7 @@ websocket_handle({text, Frame}, State) ->
       Response = jsx:encode(#{<<"type">> => <<"info">>,
         <<"sender">> => <<"WebSocket">>,
         <<"data">> => <<"Update correctly sent!">>}),
-      NewState = State;
+      NewState = {opponent, Data};
     send_request ->
       NewState = State,
       whereis(Receiver) ! Frame,
@@ -141,6 +142,16 @@ websocket_info(close, State) ->
 
 websocket_info(Info, State) ->
   {[{text, Info}], State}. %% Returns this message to the client
+
+terminate (TerminateReason, _Req, {opponent, OpponentUsername}) ->
+  io:format("Terminate reason: ~p\n", [TerminateReason]),
+  OpponentPID = whereis(OpponentUsername),
+  if
+    OpponentPID =/= undefined -> %% The opponent is not already disconnected
+      OpponentPID ! jsx:encode(#{<<"type">> => <<"opponent_disconnected">>});
+    true ->
+      ok
+  end;
 
 terminate (TerminateReason, _Req, {surrender}) ->
   io:format("Surrender: ~p\n", [self()]),

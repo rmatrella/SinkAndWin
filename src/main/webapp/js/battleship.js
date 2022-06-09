@@ -5,8 +5,9 @@
 // Indica il turno di gioco. Se dispari, giocatore 1 di turno
 let turn;
 let move;
-let start; // istante di inizio del timer
+let start; // istante d'inizio del timer
 let timer_id;
+let missed_turn = 0;
 
 // Array di oggetti che indicano lo stato della singola cella della battaglia
 // Se lo stato è 0 la cella è vuota
@@ -41,7 +42,7 @@ function setTimer(){
 
 function updateTimer(){
     let now = new Date().getTime();
-    let time_left = Math.floor((start + 30*1000 - now)/1000);
+    let time_left = Math.floor((start + 10*1000 - now)/1000);
     let timer = document.getElementById("timer");
 
     if(time_left > 0) {
@@ -53,9 +54,14 @@ function updateTimer(){
     else {
         clearInterval(timer_id);
         timer.innerHTML="";
-        move = Math.floor(Math.random() * 99);
-        temporaryDiv("TIME UP!\n Random move: " + move,1000);
-        waitForSocketConnection(ws, sendMove(move));
+        move = Math.floor(Math.random() * 99).toString();
+        missed_turn ++;
+        if(missed_turn == 3)
+            surrender();
+        else {
+            temporaryDiv("TIME UP!\n Random move: " + move, 1000);
+            waitForSocketConnection(ws, sendMove(move));
+        }
     }
 }
 
@@ -119,24 +125,24 @@ function drawTable(mode) {
 
             switch (mode) {
                 case 1:
-                    if (my_grid[cell_number] === 0)
+                    if (my_grid[cell_number] == 0)
                         cell.setAttribute("class", "empty");
-                    else if (my_grid[cell_number] === 1)
+                    else if (my_grid[cell_number] == 1)
                         cell.setAttribute("class", "ship");
-                    else if  (my_grid[cell_number] === 2)
+                    else if  (my_grid[cell_number] == 2)
                         cell.setAttribute("class", "hit");
-                    else if  (my_grid[cell_number] === 3)
+                    else if  (my_grid[cell_number] == 3)
                         cell.setAttribute("class", "missed");
                     break;
                 // disegna la griglia dell'avversario per colpire
                 case 2:
-                    if (opponent_grid[cell_number] === 0 || opponent_grid[cell_number] === 1) {
+                    if (opponent_grid[cell_number] == 0 || opponent_grid[cell_number] == 1) {
                         cell.setAttribute("class", "unknown");
                         cell.setAttribute("onClick", "hit(this)");
                     }
-                    else if  (opponent_grid[cell_number] === 2)
+                    else if  (opponent_grid[cell_number] == 2)
                         cell.setAttribute("class", "hit");
-                    else if  (opponent_grid[cell_number] === 3)
+                    else if  (opponent_grid[cell_number] == 3)
                         cell.setAttribute("class", "missed");
                     break;
             }
@@ -144,7 +150,7 @@ function drawTable(mode) {
     }
 
     // miniaturizza la tabella se mode = 1
-    if (mode === 1)
+    if (mode == 1)
         table.setAttribute("class", "miniature");
 
     let new_div = document.createElement("DIV");
@@ -326,6 +332,7 @@ function hit(cell) {
     let timer = document.getElementById("timer");
     timer.innerHTML="";
     move = cell.id;
+    missed_turn = 0;
     waitForSocketConnection(ws, sendMove(move));
 }
 
@@ -373,11 +380,11 @@ function changeTurn() {
 
 function checkCell(cell, player){
     let message;
-    if(my_grid[cell]===0 || my_grid[cell]===3) {
+    if(my_grid[cell]==0 || my_grid[cell]==3) {
         my_grid[cell] = 3;
         message = "missed";
     }
-    if(my_grid[cell]===1) {
+    if(my_grid[cell]==1) {
         my_grid[cell]=2;
         let win = 1;
 
@@ -486,56 +493,44 @@ function showMoveMsg(hit){
     message.setAttribute("id", "message");
     message_div.appendChild(message);
     grid_div.appendChild(message_div);
-    if(hit === 0){
+    if(hit == 0){ //missed ship
         message_div.setAttribute("class", "missed");
         message.innerHTML = "<h1>MISSED SHIP!</h1>";
         setTimeout(changeTurn, 1000);
     }
-    else if (hit === 1) {
+    else if (hit == 1) { //hit ship
         message_div.setAttribute("class", "hit");
         message.innerHTML = "<h1>SHIP HIT!</h1>";
         setTimeout(changeTurn, 1000);
-    }     else if (hit === 2) {
+    }
+    else if (hit == 2) { //hit and sunk ship
         message_div.setAttribute("class", "hit");
         message.innerHTML = "<h1>SHIP HIT AND SUNK!</h1>";
         setTimeout(changeTurn, 1000);
-    }else{
+    }else{ //game ended
         let button = document.createElement("a");
         button.setAttribute("id", "hit_message_button");
         button.setAttribute("class", "button");
         button.innerHTML = "NEW GAME!";
         message_div.setAttribute("class", "hit");
-        if(hit===3) {
+        if(hit==3 || hit ==6) { // I win (case 3 normal win, case 6 opponent has surrendered
             message.innerHTML = "<h1>END GAME</h1><h1>PLAYER "+ myself+ " WINS!<br /><br /><h3>Click NEW GAME to choose another opponent</h3>";
             button.setAttribute("href", "UpdatePointsServlet?winner="+myself);
         }
-        else if(hit == 4) {
+        else if(hit == 4) { //opponent wins
             message.innerHTML = "<h1>END GAME</h1><h1>PLAYER "+ opponent + " WINS!<br /><br /><h3>Click NEW GAME to choose another opponent</h3>";
             button.setAttribute("href", "UpdatePointsServlet?winner="+opponent);
         }
-        else{
-            let p = document.getElementById("turn");
-            let opponent = document.getElementById("opponentUsername").textContent;
-            let username = document.getElementById("loggedUsername").textContent;
-
-            if(hit == 5) {
-                if (p.innerHTML != "It's your turn")
-                    return;
-                sendWebSocket(JSON.stringify(new Message("surrender", "", username, opponent)));
-                message.innerHTML = "<h1>END GAME</h1><h1>YOU HAVE SURRENDER!<br /><br /><h3>Click NEW GAME to choose another opponent</h3>";
-            }else if(hit == 6){
-                message.innerHTML = "<h1>END GAME</h1><h1>PLAYER "+ opponent + " WINS!<br /><br /><h3>Click NEW GAME to choose another opponent</h3>";
-            }
-            else if(hit == 7)
-            {
-                message.innerHTML = "<h1>END GAME</h1><h1>PLAYER "+ opponent + " DISCONNECTED! YOU WIN!<br /><br /><h3>Click NEW GAME to choose another opponent</h3>";
-            }
-            if(hit == 7)
-                button.setAttribute("href", "UpdatePointsServlet?winner="+myself);
-            else
-                button.setAttribute("href", "UpdatePointsServlet?winner="+opponent);
-            clearInterval(timer_id);
+        else if(hit == 5) {
+            message.innerHTML = "<h1>END GAME</h1><h1>YOU HAVE SURRENDER!<br /><br /><h3>Click NEW GAME to choose another opponent</h3>";
+            button.setAttribute("href", "UpdatePointsServlet?winner=" + opponent);
         }
+        else if(hit == 7) {
+            message.innerHTML = "<h1>END GAME</h1><h1>PLAYER "+ opponent + " DISCONNECTED! YOU WIN!<br /><br /><h3>Click NEW GAME to choose another opponent</h3>";
+            button.setAttribute("href", "UpdatePointsServlet?winner="+myself);
+        }
+
+        clearInterval(timer_id);
         grid_div.appendChild(button);
     }
 }
@@ -553,16 +548,12 @@ function cancelDiv() {
     div.innerHTML = "";
 }
 function surrender() {
-    let p = document.getElementById("turn");
-
-    if (p.innerHTML != "It's your turn")
-        return;
-
+    console.log("surrender function");
     let opponent = document.getElementById("opponentUsername").textContent;
     let username = document.getElementById("loggedUsername").textContent;
     sendWebSocket(JSON.stringify(new Message("surrender", "", username, opponent)));
-    alert("You have surrender! ");
-    setTimeout(function () {location.href = "UpdatePointsServlet?winner="+opponent;}, 3000);
+    showMoveMsg(5);
+    //setTimeout(function (){location.href = "UpdatePointsServlet?winner="+opponent}, 3000);
 }
 
 

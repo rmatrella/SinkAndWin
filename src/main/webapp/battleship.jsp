@@ -22,7 +22,7 @@
     </div>  <!-- Fine titolo -->
 
     <div id="player">  <!-- Inizio giocatore -->
-        <button id="surrender" onclick="showMoveMsg(5);"> Surrender </button>
+        <button id="surrender" onclick="surrender()"> Surrender </button>
         <h3 id="loggedUsername"><%=username%></h3>
         <h2 id="turn"></h2>
         <h3 id="timer"></h3>

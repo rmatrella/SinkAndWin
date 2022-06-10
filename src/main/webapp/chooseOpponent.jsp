@@ -1,7 +1,5 @@
 <%@ page import="it.unipi.dsmt.dto.User" %>
-<%@ page import="java.util.List" %>
 <%@ page import="it.unipi.dsmt.persistence.KeyValueDB" %>
-<%@ page import="java.security.Key" %>
 <%@ page import="java.util.Map" %><%--
   Created by IntelliJ IDEA.
   User: matre
@@ -18,12 +16,6 @@
 <body>
 <script src="js/websocket.js?version=51"></script>
 <script src="js/requests.js?version=51"></script>
-<%
-    //User user = (User) session.getAttribute("logUser");
-    /*System.out.println("user: " + user);
-    String exists = (String) session.getAttribute("exists");
-    System.out.println("exists: " + exists);*/
-%>
 <script> waitForSocketConnection(ws, registerUser);</script>
 
 <h2 class="center-text"> Welcome
@@ -135,10 +127,6 @@
 </div>
 </div>
 <span id="hidden">
-<%
-    //if(user != null)
-      //  out.println("<script> findUser(\"" + user + "\", \"" + exists + "\"); </script>");
-%>
 </span>
 </body>
 </html>

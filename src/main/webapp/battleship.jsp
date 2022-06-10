@@ -1,3 +1,4 @@
+<%@ page import="it.unipi.dsmt.dto.User" %>
 <!doctype html>
 <html lang="eng">
 <head>
@@ -11,7 +12,7 @@
 
 <body>
 <%
-    String username = request.getParameter("myself");
+    User user = (User)session.getAttribute("logUser");
     String opponent = request.getParameter("opponent");
     String first_turn = request.getParameter("first_turn");
 %>
@@ -23,7 +24,7 @@
 
     <div id="player">  <!-- Inizio giocatore -->
         <button id="surrender" onclick="surrender()"> Surrender </button>
-        <h3 id="loggedUsername"><%=username%></h3>
+        <h3 id="loggedUsername"><%=user.getUsername()%></h3>
         <h2 id="turn"></h2>
         <h3 id="timer"></h3>
         <p id="opponentUsername" style="visibility: hidden;"><%=opponent%></p>

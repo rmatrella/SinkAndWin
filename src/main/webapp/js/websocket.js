@@ -17,7 +17,7 @@ if (!("WebSocket" in window)) {
 }
 
 function initWebSocket() {
-    ws = new WebSocket("ws://localhost:8090/ws");
+    ws = new WebSocket("ws://172.18.0.71:8090/ws");
 
     ws.onopen = function(event) {
         console.log("Websocket opened.");

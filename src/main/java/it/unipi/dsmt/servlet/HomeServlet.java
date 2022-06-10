@@ -14,14 +14,12 @@ import java.io.PrintWriter;
 public class HomeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        System.out.println("doGet");
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
-        System.out.println("username: " + username + "\npassword: " + password);
         response.setContentType("text/html");
         KeyValueDB db = KeyValueDB.getInstance();
 
@@ -29,7 +27,6 @@ public class HomeServlet extends HttpServlet {
 
         if(request.getParameter("loginButton") != null)
         {
-            System.out.println("doPost Login");
             User user = db.isLogin(username, password);
 
             if(user == null)

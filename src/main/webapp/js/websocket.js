@@ -33,6 +33,9 @@ function initWebSocket() {
     ws.onclose = function() {
         console.log('Websocket closed');
         ws.close();
+        alert("Server unreachable!");
+        //location.href = "./chooseOpponent.jsp";
+        window.open("./chooseOpponent.jsp");
     };
 }
 
@@ -53,6 +56,7 @@ function waitForSocketConnection(socket, callback){
 
 ws.onerror = function(event) {
     console.error("WebSocket error observed:", event.data);
+    ws.close();
     //location.href = "./index.jsp?error=server unreachable, try later!";
 };
 

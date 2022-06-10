@@ -5,9 +5,10 @@
 // Indica il turno di gioco. Se dispari, giocatore 1 di turno
 let turn;
 let move;
-let start; // istante d'inizio del timer
+let time_left; // istante d'inizio del timer
 let timer_id;
 let missed_turn = 0;
+let game_ended = false;
 
 // Array di oggetti che indicano lo stato della singola cella della battaglia
 // Se lo stato è 0 la cella è vuota
@@ -29,20 +30,19 @@ function setTurn(){
         return;
     }
     else{
-        p.innerHTML = "Opponent's turn";
+        p.innerHTML = opponent+"'s turn";
         return;
     }
 }
 
 function setTimer(){
-    start = new Date().getTime();
+    time_left = 30;
     timer_id = setInterval(updateTimer, 1000);
 
 }
 
 function updateTimer(){
-    let now = new Date().getTime();
-    let time_left = Math.floor((start + 10*1000 - now)/1000);
+    time_left--;
     let timer = document.getElementById("timer");
 
     if(time_left > 0) {
@@ -84,7 +84,7 @@ function setBackground(){
 }
 
 function setUp() {
-    temporaryDiv("Game started", 1500);
+    temporaryDiv("Game started with "+ opponent, 1500);
     drawTable(1);
     drawTable(2);
 
@@ -187,7 +187,7 @@ function test_vert(cell, size){
 
     test = true;
     if(row-size+1>0 && (row==0 || my_grid[cell-10*size]==0) &&
-        (row==9 || my_grid[cell+10]==0)){
+        (row==9 || my_grid[cell+30]==0)){
         for(let i=cell+1; i>=cell-1-(size-1)*10; i--){
             if(Math.floor(i/10)>row){
                 continue;
@@ -337,7 +337,7 @@ function hit(cell) {
 }
 
 function moveReply(reply){
-    if(move==null)
+    if(move==null || game_ended == true)
         return;
     let cell = document.getElementById(move);
 
@@ -362,6 +362,7 @@ function moveReply(reply){
             break;
         case "win":
             showMoveMsg(3);
+            game_ended = true;
             break;
     }
     move = null;
@@ -398,6 +399,7 @@ function checkCell(cell, player){
             message = "win";
             showMoveMsg(4);
             waitForSocketConnection(ws, sendMoveReply(message));
+            game_ended = true;
             return;
         }
         else {
@@ -422,28 +424,24 @@ function checkSunkShipType(cell) {
     {
         for (let i = (cell-10); Math.floor(i / 10) >= 0 && opponent_grid[i] == 2; i = i - 10) //check up
         {
-            console.log(i);
             dim++;
         }
     }
     if (opponent_grid[cell + 10] == 2)
     {
         for (let i = (cell+10); Math.floor(i / 10) <= 9 && opponent_grid[i] == 2 ; i = i + 10) {
-            console.log(i);
             dim++;
         }
     }
     if (opponent_grid[cell - 1] == 2)
     {
         for(let i= (cell-1); i%10 >= 0 && opponent_grid[i] == 2 ;i--) {
-            console.log(i);
             dim++;
         }
     }
     if (opponent_grid[cell + 1] == 2)
     {
         for(let i= (cell+1); i%10 <= 9 && opponent_grid[i] ==2 ;i++) {
-            console.log(i);
             dim++;
         }
     }
@@ -484,6 +482,8 @@ function checkSunkShip(cell){
 
 // gestisce il messaggio di feedback dopo un colpo sparato
 function showMoveMsg(hit){
+    if(game_ended == true)
+        return;
     let grid_div = document.getElementById("grids");
     grid_div.innerHTML="";
 
@@ -548,11 +548,11 @@ function cancelDiv() {
     div.innerHTML = "";
 }
 function surrender() {
-    console.log("surrender function");
     let opponent = document.getElementById("opponentUsername").textContent;
     let username = document.getElementById("loggedUsername").textContent;
     sendWebSocket(JSON.stringify(new Message("surrender", "", username, opponent)));
     showMoveMsg(5);
+    game_ended = true;
     //setTimeout(function (){location.href = "UpdatePointsServlet?winner="+opponent}, 3000);
 }
 

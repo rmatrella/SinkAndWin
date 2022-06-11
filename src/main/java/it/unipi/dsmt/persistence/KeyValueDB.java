@@ -16,8 +16,8 @@ public class KeyValueDB {
     public DB db;
 
     private KeyValueDB(){
-        this("..\\..\\..\\..\\..\\..\\..\\database");
-        //this("/database");
+        //this("..\\..\\..\\..\\..\\..\\..\\database");
+        this("/database");
 
     }
 

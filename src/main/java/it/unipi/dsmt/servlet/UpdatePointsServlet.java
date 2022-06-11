@@ -26,13 +26,16 @@ public class UpdatePointsServlet extends HttpServlet {
         User user = (User) session.getAttribute("logUser");
         String winner = request.getParameter("winner");
         KeyValueDB db = KeyValueDB.getInstance();
+        int points = user.getPoints();
 
         if(user.getUsername().equals(winner)) {
-            int points = user.getPoints();
             points++;
-            db.updatePoints(user.getUsername(), points);
-            user.setPoints(points);
+        }else{
+            if(points > 0)
+                points--;
         }
+        db.updatePoints(user.getUsername(), points);
+        user.setPoints(points);
         session.setAttribute("logUser", user);
 
         //response.sendRedirect("main.jsp");

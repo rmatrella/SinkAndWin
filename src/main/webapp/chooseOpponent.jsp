@@ -1,6 +1,7 @@
 <%@ page import="it.unipi.dsmt.dto.User" %>
 <%@ page import="it.unipi.dsmt.persistence.KeyValueDB" %>
-<%@ page import="java.util.Map" %><%--
+<%@ page import="java.util.Map" %>
+<%@ page import="it.unipi.dsmt.utils.Utils" %><%--
   Created by IntelliJ IDEA.
   User: matre
   Date: 19/05/2022
@@ -62,26 +63,44 @@
             <thead style="background-color: #9daccb;">
             <tr>
                 <th>
-                    <span>Rank</span>
-                </th>
-                <th>
-                    <span>User</span>
-                </th>
-                <th>
-                    <span>Points</span>
+                    <span>Your points</span>
                 </th>
             </tr>
             </thead>
             <tbody id="userRank" style="background: #9daccb;">
-            <%
-                int i = 1;
-                for (Map.Entry<String, Integer> players : bestplayers.entrySet()) {
-                    out.print("<tr><td class='center'>" + i + "</td><td class='center'>" + players.getKey() + "</td><td class='center'>" + players.getValue() + "</td></tr>");
-                    i++;
-                    if(i >= 6)
-                        break;
-                }
-            %>
+                <tr>
+                    <td><span style="color: royalblue; font-size: 23px;">
+                        You have
+                        <%
+                            /*int i = 1;
+                            for (Map.Entry<String, Integer> players : bestplayers.entrySet()) {
+                                out.print("<tr><td class='center'>" + i + "</td><td class='center'>" + players.getKey() + "</td><td class='center'>" + players.getValue() + "</td></tr>");
+                                i++;
+                                if(i >= 6)
+                                    break;
+                            }*/
+                            int points = user.getPoints();
+                            out.println(points);
+                        %> points
+                    </span></td>
+                </tr>
+                <tr>
+                    <td><span>
+                        You are in
+                        <%
+                            String rank = Utils.ranking(user.getUsername());
+                            out.println(rank);
+                        %>
+                    </span></td>
+                </tr>
+                <tr>
+                    <td><span>
+                        <%
+                            out.println(Utils.leftPoints(rank, points));
+                        %>
+                        points left to the next rank!
+                    </span></td>
+                </tr>
             </tbody>
         </table>
     </div>

@@ -161,12 +161,13 @@ terminate (TerminateReason, _Req, {surrender}) ->
   io:format("Surrender: ~p\n", [self()]),
   io:format("Terminate reason: ~p\n", [TerminateReason]);
 
-terminate ({remote,_,_}, _Req, _) ->
+ terminate ({remote,_,_}, _Req, _) ->
   Username = element(2, erlang:process_info(self(), registered_name)),
-  io:format("*** Connection with ~p closed\n", [Username]),
-  sinkandwin_server ! {delUser, Username};
+   io:format("*** Connection with ~p closed\n", [Username]),
+   sinkandwin_server ! {delUser, Username}.
 
-terminate (TerminateReason, _Req, {}) ->
-  io:format("*** Termination: ~p\n", [TerminateReason]),
-  Username = element(2, erlang:process_info(self(), registered_name)),
-  io:format("*** Process: ~p\n", [Username]).
+%%terminate (TerminateReason, _Req, {}) ->
+%%  io:format("*** Termination: ~p\n", [TerminateReason]),
+%%  Username = element(2, erlang:process_info(self(), registered_name)),
+%%  sinkandwin_server ! {delUser, Username},
+%%  io:format("*** Process: ~p\n", [Username]).

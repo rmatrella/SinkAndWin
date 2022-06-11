@@ -27,14 +27,11 @@
         Map<String, Integer> bestplayers = keyValueDB.getRank();
         %></span>!
 </h2>
-<h3 class="center-text"> Your points:
-    <span id="points"><%=user.getPoints()%></span>
-</h3>
 <a href="LogoutServlet" id="logout"><button>Logout</button></a>
 <div id="snippetContent">
    <div class="containerTable" id="opponent" style="float:left;">
        <h3 class="center"> Choose an opponent! </h3>
-       <table class="table" style="width: 700px; min-height: 250px;">
+       <table class="table" style="width: 650px; min-height: 250px;">
            <thead style="background-color: #9daccb;">
            <tr>
                <th>
@@ -48,7 +45,7 @@
                </th>
            </tr>
            </thead>
-           <tbody id="onlineUsers" style="background: #9daccb;">
+           <tbody id="onlineUsers">
            </tbody>
        </table>
        <div id="scrollButtons">
@@ -58,16 +55,16 @@
        </div>
    </div>
     <div class="containerTable" style="float: right;">
-        <h3 class="center"> Best players </h3>
-        <table class="table" style="width: 700px; min-height: 250px;">
+        <h3 class="center"> Your points </h3>
+        <table class="table" style="width: 650px; min-height: 250px;">
             <thead style="background-color: #9daccb;">
             <tr>
                 <th>
-                    <span>Your points</span>
+                    <span>Your rank</span>
                 </th>
             </tr>
             </thead>
-            <tbody id="userRank" style="background: #9daccb;">
+            <tbody id="userRank">
                 <tr>
                     <td><span style="color: royalblue; font-size: 23px;">
                         You have
@@ -106,7 +103,7 @@
     </div>
     <div class="containerTable" id="requestDone">
         <h3 class="center"> Game requests received </h3>
-        <table class="table" id="request_table" style="width: 700px; min-height: 250px;">
+        <table class="table" id="request_table" style="width: 650px; min-height: 250px;">
             <thead style="background-color: #9daccb;">
             <tr>
                 <th>
@@ -117,13 +114,13 @@
                 </th>
             </tr>
             </thead>
-            <tbody id="userRequests" style="background: #9daccb;">
+            <tbody id="userRequests">
             </tbody>
         </table>
     </div>
     <div class="containerTable" style="float: left;">
         <h3 class="center"> Game requests done</h3>
-        <table class="table" id="request_done_table" style="width: 700px; min-height: 250px;">
+        <table class="table" id="request_done_table" style="width: 650px; min-height: 250px;">
             <thead style="background-color: #9daccb;">
             <tr>
                 <th>
@@ -134,7 +131,7 @@
                 </th>
             </tr>
             </thead>
-            <tbody id="userRequestsDone" style="background: #9daccb;">
+            <tbody id="userRequestsDone">
             </tbody>
         </table>
     </div>

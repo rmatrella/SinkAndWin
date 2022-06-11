@@ -96,6 +96,7 @@ ws.onmessage = function (event) {
         case "error":
             alert(data);
             //location.href = "./logout-servlet";
+            location.href ="./index.jsp";
             break;
 
         default:

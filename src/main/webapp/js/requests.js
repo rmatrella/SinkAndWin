@@ -169,6 +169,9 @@ function cleanTable(){
 function addUserTable(user) {
     let table_body = document.getElementById("onlineUsers");
 
+    if(updateUserTable(user, "online"))
+        return;
+
     if(table_body.rows.length == 5)
         return;
     let tr = document.createElement('tr');
@@ -201,9 +204,14 @@ function updateUserTable(user, type){
 
     let row = document.getElementById(user);
     if(row == null)
-        return;
+        return false;
     //let text = document.createTextNode("On game");
-    if(type == "on game") {
+    if(type == "online")
+    {
+        row.getElementsByTagName("td")[1].lastChild.nodeValue = "Online";
+        row.getElementsByClassName("icon")[0].src = "./images/online-icon.png";
+    }
+    else if(type == "on game") {
         row.getElementsByTagName("td")[1].lastChild.nodeValue = "On game";
         row.getElementsByClassName("icon")[0].src = "./images/ongame-icon.png";
     }
@@ -212,6 +220,7 @@ function updateUserTable(user, type){
         row.getElementsByClassName("icon")[0].src = "./images/offline-icon.png";
     }
     document.getElementById("button_" + user).disabled = true;
+    return true;
 }
 
 function deleteUserTable(user){

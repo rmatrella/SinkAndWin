@@ -153,6 +153,10 @@ terminate (TerminateReason, _Req, {opponent, OpponentUsername}) ->
       ok
   end;
 
+terminate(TerminateReason, _Req, {error, Msg}) ->
+  io:format("Terminate reason: ~p\n", [TerminateReason]),
+  io:format("*** Error: ~p\n", [Msg]);
+
 terminate (TerminateReason, _Req, {surrender}) ->
   io:format("Surrender: ~p\n", [self()]),
   io:format("Terminate reason: ~p\n", [TerminateReason]);

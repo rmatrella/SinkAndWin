@@ -39,31 +39,26 @@
 
         <table class="console">
             <tr>
-                <th>#</th>
                 <th>Ship type</th>
                 <th>Dimension</th>
                 <th>Ships left</th>
             </tr>
             <tr>
-                <td>1</td>
                 <td>Portaerei</td>
                 <td>5</td>
                 <td id="dim_5">1</td>
             </tr>
             <tr>
-                <td>2</td>
                 <td>Corazzate</td>
                 <td>4</td>
                 <td id="dim_4">2</td>
             </tr>
             <tr>
-                <td>3</td>
                 <td>Sottomarini</td>
                 <td>3</td>
                 <td id="dim_3">2</td>
             </tr>
             <tr>
-                <td>4</td>
                 <td>Incrociatori</td>
                 <td>2</td>
                 <td id="dim_2">3</td>

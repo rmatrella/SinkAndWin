@@ -27,11 +27,11 @@
         Map<String, Integer> bestplayers = keyValueDB.getRank();
         %></span>!
 </h2>
-<a href="LogoutServlet" id="logout"><button>Logout</button></a>
+<a href="LogoutServlet" class="logout"><button id="logout">Logout</button></a>
 <div id="snippetContent">
-   <div class="containerTable" id="opponent" style="float:left;">
+   <div class="containerTable" style="float:left;">
        <h3 class="center"> Choose an opponent! </h3>
-       <table class="table" style="width: 650px; min-height: 250px;">
+       <table class="table">
            <thead style="background-color: #9daccb;">
            <tr>
                <th>
@@ -56,7 +56,7 @@
    </div>
     <div class="containerTable" style="float: right;">
         <h3 class="center"> Your points </h3>
-        <table class="table" style="width: 650px; min-height: 250px;">
+        <table class="table">
             <thead style="background-color: #9daccb;">
             <tr>
                 <th>
@@ -101,9 +101,9 @@
             </tbody>
         </table>
     </div>
-    <div class="containerTable" id="requestDone">
+    <div class="containerTable" style="float: left;">
         <h3 class="center"> Game requests received </h3>
-        <table class="table" id="request_table" style="width: 650px; min-height: 250px;">
+        <table class="table">
             <thead style="background-color: #9daccb;">
             <tr>
                 <th>
@@ -118,9 +118,9 @@
             </tbody>
         </table>
     </div>
-    <div class="containerTable" style="float: left;">
+    <div class="containerTable" style="float: right;">
         <h3 class="center"> Game requests done</h3>
-        <table class="table" id="request_done_table" style="width: 650px; min-height: 250px;">
+        <table class="table">
             <thead style="background-color: #9daccb;">
             <tr>
                 <th>

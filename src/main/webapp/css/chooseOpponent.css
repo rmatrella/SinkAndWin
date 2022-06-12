@@ -5,6 +5,8 @@
     border-collapse: separate;
     border-spacing: 0;
     background-color:#f5f5f5;
+    width: 100%;
+    min-height: 250px;
 }
 
 .table td {
@@ -17,9 +19,9 @@
 }
 
 .containerTable{
-    width: 700px;
-    min-height: 250px;
-    margin: 2% 0 0 5%;
+    width: 45%;
+    min-height: 350px;
+    margin: 1% 1% 2% 2%;
 }
 
 .center{
@@ -46,7 +48,7 @@ img.icon {
     border-radius: 10px;
     padding: 5% 25%;
 }
-
+/*
 #search{
     width: 30%;
 }
@@ -67,25 +69,31 @@ img.icon {
     left: 25px;
     top: 25px;
     width: 90%;
-}
+}*/
 
 #hidden{
     visibility: hidden;
 }
 
-#logout{
+.logout {
     float: right;
     border-radius: 50px;
     margin-right: 5%;
+    width: 100%;
 }
 
+#logout{
+    float:right;
+    margin-right:2%
+}
+/*
 #searchedUser{
     width: 18%;
     height: 5%;
     background-color: #9daccb;
     margin-top: 5%;
 }
-
+*/
 .icon{
     width: 10%;
 }
@@ -122,10 +130,4 @@ img.icon {
 
 .arrow{
     width: 25px;
-}
-
-#requestDone{
-    float: right;
-    margin-right:8%;
-    margin-top: 3.5%;
 }

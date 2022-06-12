@@ -13,8 +13,8 @@ ws.onmessage = function (event) {
     switch (type){
 
         case "error":
-            alert(data);
-            //location.href = "./logout-servlet";
+            console.log(data);
+            showMoveMsg(7);
             break;
 
         case "game_move":

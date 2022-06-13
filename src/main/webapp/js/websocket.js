@@ -57,7 +57,7 @@ function waitForSocketConnection(socket, callback){
 ws.onerror = function(event) {
     console.error("WebSocket error observed:", event.data);
     ws.close();
-    //location.href = "./index.jsp?error=server unreachable, try later!";
+    location.href = "./index.jsp?error=server unreachable, try later!";
 };
 
 

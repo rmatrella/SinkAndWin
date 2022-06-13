@@ -8,7 +8,11 @@
     <link rel="icon" type="image/jpg" href="images/icon.jpg"/>
 </head>
 <body>
-
+<%
+    String error = request.getParameter("error");
+    if(error != null){ %>
+        <script>alert(<%=error%>)</script>
+    <%}%>
 <h1 class="center-text">Welcome to SinkAndWin!</h1>
 
 <div class="divFifty">

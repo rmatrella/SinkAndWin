@@ -18,6 +18,7 @@ if (!("WebSocket" in window)) {
 
 function initWebSocket() {
     ws = new WebSocket("ws://172.18.0.71:8090/ws");
+    //ws = new WebSocket("ws://localhost:8090/ws");
 
     ws.onopen = function(event) {
         console.log("Websocket opened.");
@@ -33,9 +34,8 @@ function initWebSocket() {
     ws.onclose = function() {
         console.log('Websocket closed');
         ws.close();
-        alert("Server unreachable!");
-        //location.href = "./chooseOpponent.jsp";
-        window.open("./chooseOpponent.jsp");
+
+        location.href = "./index.jsp";
     };
 }
 

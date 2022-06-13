@@ -26,16 +26,17 @@ function setTurn(){
     let p = document.getElementById("turn");
     if((turn % 2 != 0 && first=="true") || (turn % 2 == 0 && first=="false")) { //is not my turn
         p.innerHTML = "It's your turn";
-        setTimer();
+        setTurnTimer();
         return;
     }
     else{
         p.innerHTML = opponent+"'s turn";
+        setTestTimer(60);
         return;
     }
 }
 
-function setTimer(){
+function setTurnTimer(){
     time_left = 30;
     timer_id = setInterval(updateTimer, 1000);
 

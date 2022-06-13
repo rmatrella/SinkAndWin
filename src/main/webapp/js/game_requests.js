@@ -2,6 +2,9 @@ let myself;
 let opponent;
 let first;
 
+let time;
+let timer;
+
 ws.onmessage = function (event) {
     console.log("message received: "+ event.data);
 
@@ -18,6 +21,7 @@ ws.onmessage = function (event) {
             break;
 
         case "game_move":
+            clearInterval(timer);
             checkCell(data, sender);
             break;
 
@@ -56,4 +60,21 @@ function sendMoveReply(reply){
 
 function notifyOnGame(){
     sendWebSocket(JSON.stringify(new Message("ongame_user", opponent, myself, "WebSocket")));
+}
+
+
+function setTestTimer(sec){
+    time = sec;
+    timer = setInterval(updateTestTimer, 1000);
+
+}
+
+function updateTestTimer(){
+    time--;
+    console.log("time left:" + time);
+    if(time <= 0) {
+        clearInterval(timer);
+        alert("Connection error!\n Game ended without a winner!");
+        location.href ="./index.jsp";
+    }
 }

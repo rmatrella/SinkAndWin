@@ -25,14 +25,17 @@ public class UpdatePointsServlet extends HttpServlet {
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute("logUser");
         String winner = request.getParameter("winner");
+        String lose_points = request.getParameter("l_ships");
         KeyValueDB db = KeyValueDB.getInstance();
         int points = user.getPoints();
 
         if(user.getUsername().equals(winner)) {
-            points++;
+            points += 10;
         }else{
-            if(points > 0)
-                points--;
+            if((points - Integer.parseInt(lose_points)) > 0)
+                points -= Integer.parseInt(lose_points);
+            else
+                points = 0;
         }
         db.updatePoints(user.getUsername(), points);
         user.setPoints(points);

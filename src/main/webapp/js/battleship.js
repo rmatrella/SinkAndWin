@@ -9,6 +9,7 @@ let time_left; // istante d'inizio del timer
 let timer_id;
 let missed_turn = 0;
 let game_ended = false;
+let ships_left = 8;
 
 // Array di oggetti che indicano lo stato della singola cella della battaglia
 // Se lo stato è 0 la cella è vuota
@@ -31,7 +32,6 @@ function setTurn(){
     }
     else{
         p.innerHTML = opponent+"'s turn";
-        setTestTimer(60);
         return;
     }
 }
@@ -407,6 +407,7 @@ function checkCell(cell, player){
             let sunk = checkSunkShip(cell);
             if(sunk==1){
                 message = "sunk";
+                ships_left--;
             }
             else
                 message = "hit";
@@ -509,6 +510,7 @@ function showMoveMsg(hit){
         message.innerHTML = "<h1>SHIP HIT AND SUNK!</h1>";
         setTimeout(changeTurn, 1000);
     }else{ //game ended
+        clearInterval(timer);
         let button = document.createElement("a");
         button.setAttribute("id", "hit_message_button");
         button.setAttribute("class", "button");
@@ -516,19 +518,19 @@ function showMoveMsg(hit){
         message_div.setAttribute("class", "hit");
         if(hit==3 || hit ==6) { // I win (case 3 normal win, case 6 opponent has surrendered
             message.innerHTML = "<h1>END GAME</h1><h1>PLAYER "+ myself+ " WINS!<br /><br /><h3>Click NEW GAME to choose another opponent</h3>";
-            button.setAttribute("href", "UpdatePointsServlet?winner="+myself);
+            button.setAttribute("href", "UpdatePointsServlet?winner="+myself+"&l_ships=0");
         }
         else if(hit == 4) { //opponent wins
             message.innerHTML = "<h1>END GAME</h1><h1>PLAYER "+ opponent + " WINS!<br /><br /><h3>Click NEW GAME to choose another opponent</h3>";
-            button.setAttribute("href", "UpdatePointsServlet?winner="+opponent);
+            button.setAttribute("href", "UpdatePointsServlet?winner="+opponent+"&l_ships="+ships_left);
         }
         else if(hit == 5) {
             message.innerHTML = "<h1>END GAME</h1><h1>YOU HAVE SURRENDER!<br /><br /><h3>Click NEW GAME to choose another opponent</h3>";
-            button.setAttribute("href", "UpdatePointsServlet?winner=" + opponent);
+            button.setAttribute("href", "UpdatePointsServlet?winner=" + opponent+"&l_ships="+ships_left);
         }
         else if(hit == 7) {
             message.innerHTML = "<h1>END GAME</h1><h1>PLAYER "+ opponent + " DISCONNECTED! YOU WIN!<br /><br /><h3>Click NEW GAME to choose another opponent</h3>";
-            button.setAttribute("href", "UpdatePointsServlet?winner="+myself);
+            button.setAttribute("href", "UpdatePointsServlet?winner="+myself+"&l_ships=0");
         }
 
         clearInterval(timer_id);

@@ -34,8 +34,6 @@ function initWebSocket() {
     ws.onclose = function() {
         console.log('Websocket closed');
         ws.close();
-
-        location.href = "./index.jsp";
     };
 }
 

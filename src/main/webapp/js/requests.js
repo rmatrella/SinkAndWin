@@ -205,21 +205,27 @@ function updateUserTable(user, type){
     let row = document.getElementById(user);
     if(row == null)
         return false;
-    //let text = document.createTextNode("On game");
+
+    let button = document.getElementById("button_" + user);
     if(type == "online")
     {
         row.getElementsByTagName("td")[1].lastChild.nodeValue = "Online";
         row.getElementsByClassName("icon")[0].src = "./images/online-icon.png";
+        button.disabled = false;
+        button.hidden = false;
     }
     else if(type == "on game") {
         row.getElementsByTagName("td")[1].lastChild.nodeValue = "On game";
         row.getElementsByClassName("icon")[0].src = "./images/ongame-icon.png";
+        button.disabled = true;
+        button.hidden = true;
     }
     else if(type == "offline") {
         row.getElementsByTagName("td")[1].lastChild.nodeValue = "Offline";
         row.getElementsByClassName("icon")[0].src = "./images/offline-icon.png";
+        button.disabled = true;
+        button.hidden = true;
     }
-    document.getElementById("button_" + user).disabled = true;
     return true;
 }
 

@@ -337,7 +337,7 @@ function hit(cell) {
     waitForSocketConnection(ws, sendMove(move));
 }
 
-function moveReply(reply){
+function receiveReply(reply){
     if(move==null || game_ended == true)
         return;
     let cell = document.getElementById(move);
@@ -357,7 +357,7 @@ function moveReply(reply){
             opponent_grid[move] = 2;
             cell.setAttribute("class", "hit");
             showMoveMsg(2);
-            let dim = checkSunkShipType(move);
+            let dim = checkSunkDim(move);
             let quanti = document.getElementById("dim_"+dim).textContent;
             document.getElementById("dim_"+dim).textContent = quanti-1;
             break;
@@ -380,7 +380,7 @@ function changeTurn() {
     setTurn();
 }
 
-function checkCell(cell, player){
+function checkReply(cell){
     let message;
     if(my_grid[cell]==0 || my_grid[cell]==3) {
         my_grid[cell] = 3;
@@ -407,7 +407,6 @@ function checkCell(cell, player){
             let sunk = checkSunkShip(cell);
             if(sunk==1){
                 message = "sunk";
-                ships_left--;
             }
             else
                 message = "hit";
@@ -417,7 +416,7 @@ function checkCell(cell, player){
     changeTurn();
 }
 
-function checkSunkShipType(cell) {
+function checkSunkDim(cell) {
 
     let dim = 1;
     cell = parseInt(cell);
@@ -506,6 +505,7 @@ function showMoveMsg(hit){
         setTimeout(changeTurn, 1000);
     }
     else if (hit == 2) { //hit and sunk ship
+        ships_left --;
         message_div.setAttribute("class", "hit");
         message.innerHTML = "<h1>SHIP HIT AND SUNK!</h1>";
         setTimeout(changeTurn, 1000);

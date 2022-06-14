@@ -21,11 +21,11 @@ ws.onmessage = function (event) {
             break;
 
         case "game_move":
-            checkCell(data, sender);
+            checkReply(data);
             break;
 
         case "move_reply":
-            moveReply(data);
+            receiveReply(data);
             break;
 
         case "surrender":

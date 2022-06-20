@@ -66,8 +66,6 @@ websocket_handle({text, Frame}, State) ->
           NewState = State
       end;
     ongame_user ->
-      %%PID = process_info(self(), registered_name),
-      %%Name = element(2, PID),
       register(Sender, self()),
       sinkandwin_server ! {onGameUser,Sender},
       Response = jsx:encode(#{<<"type">> => <<"info">>,

@@ -1,6 +1,4 @@
 <%@ page import="it.unipi.dsmt.dto.User" %>
-<%@ page import="it.unipi.dsmt.persistence.KeyValueDB" %>
-<%@ page import="java.util.Map" %>
 <%@ page import="it.unipi.dsmt.utils.Utils" %><%--
   Created by IntelliJ IDEA.
   User: matre
@@ -23,8 +21,6 @@
     <span id="loggedUsername"><%
         User user = (User)session.getAttribute("logUser");
         out.print(user.getUsername());
-        KeyValueDB keyValueDB = KeyValueDB.getInstance();
-        Map<String, Integer> bestplayers = keyValueDB.getRank();
         %></span>!
 </h2>
 <a href="LogoutServlet" class="logout"><button id="logout">Logout</button></a>
@@ -69,13 +65,6 @@
                     <td><span style="color: royalblue; font-size: 23px;">
                         You have
                         <%
-                            /*int i = 1;
-                            for (Map.Entry<String, Integer> players : bestplayers.entrySet()) {
-                                out.print("<tr><td class='center'>" + i + "</td><td class='center'>" + players.getKey() + "</td><td class='center'>" + players.getValue() + "</td></tr>");
-                                i++;
-                                if(i >= 6)
-                                    break;
-                            }*/
                             int points = user.getPoints();
                             out.println(points);
                         %> points
@@ -135,11 +124,6 @@
             </tbody>
         </table>
     </div>
-    <%--<div id="search-container">
-        <h3 class="center" style="margin-right: 12%;"> Search a player </h3>
-            <input type="text" id="userSearch" placeholder="Search.." name="userSearch">
-            <button onclick="findUser();"><img src="./images/search.png" id="search"></button>
-    </div>--%>
 </div>
 </div>
 <span id="hidden">

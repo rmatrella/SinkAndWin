@@ -1,10 +1,10 @@
-let online_users = new Array();
-let user_requests = new Array();
-let ongame_users = new Array();
+let online_users = [];
+let ongame_users = [];
 let myself;
 let opponent;
 let currentIndex = 0;
 
+//sending of register message to the server
 function registerUser () {
     myself = document.getElementById("loggedUsername").textContent;
     sendWebSocket(JSON.stringify(new Message( "user_registration", "",myself, "WebSocket")));
@@ -17,78 +17,73 @@ ws.onmessage = function (event) {
     let type = jsonString.type;
     let data = jsonString.data;
     let sender = jsonString.sender;
-    let receiver = jsonString.receiver;
 
     switch (type){
 
-        case "user_list":
+        case "user_list":  //receiving of the online users list
             shuffle(data);
-            for(let i=0; i<data.length; i++){
+            for(let i=0; i<data.length; i++){ //inserting online users into the array
                 online_users.push(data[i]);
                 if(i < 5) {
-                    addUserTable(data[i]);
+                    addUserTable(data[i]); //adding users to the table
                 }
             }
-            if(online_users.length > 5) {
+            if(online_users.length > 5) { //if users more than 5, enable buttons
                 document.getElementById("next").disabled = false;
                 document.getElementById("prev").disabled = false;
             }
             break;
 
-        case "add_user":
-            online_users.push(data);
+        case "add_user": //new user online
+            online_users.push(data); //adding into online users array
             if(online_users.length > 5) {
                 document.getElementById("next").disabled = false;
                 document.getElementById("prev").disabled = false;
             }
-            addUserTable(data);
+            addUserTable(data); //adding to the table of online users
             //shuffle(online_users);
             break;
 
-        case "delete_user":
-            updateUserTable(data, "offline");
+        case "delete_user": //user logs out
+            updateUserTable(data, "offline"); //putting him offline into the table
             if(online_users.includes(data))
             {
-                index = online_users.indexOf(data);
-                online_users.splice(index, 1);
-                deleteRequestTable(data);
+                let index = online_users.indexOf(data);
+                online_users.splice(index, 1); //remove from online users
+                deleteRequestTable(data); //delete all the requests coming from the user
                 currentIndex --;
             }
             break;
 
-        case "ongame_user":
-            ongame_users.push(data);
-            updateUserTable(data, "on game");
-            deleteRequestTable(data);
+        case "ongame_user": //a user starts gaming
+            ongame_users.push(data); //inserting user in ongame array
+            updateUserTable(data, "on game"); //update user inside the table
+            deleteRequestTable(data); //delete all his game requests
             currentIndex = 0;
             break;
 
-        case "ongame_list":
+        /*case "ongame_list": //
             for(let i=0; i<data.length; i++){
                 ongame_users.push(data[i]);
             }
             break;
-
-        case "send_request":
-            //user_requests.push(sender);
-            addReqTable(sender);
+        */
+        case "send_request": //sending game request
+            addReqTable(sender); //adding request into request table
             break;
 
-        case "cancel_request":
-            //index = user_requests.indexOf(sender);
-            //user_requests.splice(index, 1);
+        case "cancel_request": //cancel game request
             let row = document.getElementById("request_" + sender);
-            row.remove();
+            row.remove(); //remove from the request table
             break;
 
-        case "accept_request":
+        case "accept_request": //accept game request
             opponent = sender;
-            //notifyOnGame();
-            location.href = "./battleship.jsp?opponent="+opponent+"&first_turn=true";
+            location.href = "./battleship.jsp?opponent="+opponent+"&first_turn=true"; //redirect to the game page
             break;
 
         case "info":
-            if(data == "Request correctly accepted!") {
+            if(data === "Request correctly accepted!") {
                 location.href = "./battleship.jsp?opponent="+opponent+"&first_turn=false";
             }
             break;
@@ -103,11 +98,7 @@ ws.onmessage = function (event) {
     }
 }
 
-function registerUser () {
-    myself = document.getElementById("loggedUsername").textContent;
-    sendWebSocket(JSON.stringify(new Message( "user_registration", "",myself, "WebSocket")));
-}
-
+//shows the previous online users with ring array
 function previousUsers(){
 
     cleanTable();
@@ -128,7 +119,7 @@ function previousUsers(){
         document.getElementById("prev").disabled = true;
     }
 }
-
+//shows the next online users with ring array
 function nextUsers(){
 
     cleanTable();
@@ -146,6 +137,7 @@ function nextUsers(){
     }
 }
 
+//randomize the users orders into array in order to show them equally
 function shuffle(a) {
     let j, x, i;
     for (i = a.length - 1; i > 0; i--) {
@@ -157,22 +149,22 @@ function shuffle(a) {
     return a;
 }
 
-
+//remove all element from online users table
 function cleanTable(){
 
-    var table = document.getElementById('onlineUsers');
+    let table = document.getElementById('onlineUsers');
     while(table.rows.length > 0) {
         table.deleteRow(0);
     }
 }
-
+//add user to the online user table
 function addUserTable(user) {
     let table_body = document.getElementById("onlineUsers");
 
     if(updateUserTable(user, "online"))
         return;
 
-    if(table_body.rows.length == 5)
+    if(table_body.rows.length === 5)
         return;
     let tr = document.createElement('tr');
     let td_username = tr.appendChild(document.createElement('td'));
@@ -189,17 +181,16 @@ function addUserTable(user) {
     button.setAttribute("value","sendRequest");
     button.setAttribute("class","buttonRequest");
     button.setAttribute("onclick", "sendRequest(\""+user+"\");");
-    //img.setAttribute("src", "./images/online-icon.png");
     img.setAttribute("class", "icon");
 
     img.src = "./images/online-icon.png";
-    //td_status.innerHTML = "Online";
     button.innerHTML = "Send Request";
     td_username.innerHTML = user;
     tr.setAttribute("id", user);
     table_body.appendChild(tr);
 }
 
+//updates the table in case a user in the table becomes online, ongame or offline
 function updateUserTable(user, type){
 
     let row = document.getElementById(user);
@@ -207,20 +198,20 @@ function updateUserTable(user, type){
         return false;
 
     let button = document.getElementById("button_" + user);
-    if(type == "online")
+    if(type === "online")
     {
         row.getElementsByTagName("td")[1].lastChild.nodeValue = "Online";
         row.getElementsByClassName("icon")[0].src = "./images/online-icon.png";
         button.disabled = false;
         button.hidden = false;
     }
-    else if(type == "on game") {
+    else if(type === "on game") {
         row.getElementsByTagName("td")[1].lastChild.nodeValue = "On game";
         row.getElementsByClassName("icon")[0].src = "./images/ongame-icon.png";
         button.disabled = true;
         button.hidden = true;
     }
-    else if(type == "offline") {
+    else if(type === "offline") {
         row.getElementsByTagName("td")[1].lastChild.nodeValue = "Offline";
         row.getElementsByClassName("icon")[0].src = "./images/offline-icon.png";
         button.disabled = true;
@@ -228,51 +219,39 @@ function updateUserTable(user, type){
     }
     return true;
 }
-
-function deleteUserTable(user){
-    let row = document.getElementById(user);
-    if(row != null)
-        row.remove();
-}
-
+//removes all the requests to a specific user
 function deleteRequestTable(user){
     let row = document.getElementById("request_" + user);
     if(row != null)
         row.remove();
 }
-
+//removes all the requests made from a specific user
 function deleteRequestDoneTable(user){
     let row = document.getElementById("cancel_" + user);
     if(row != null)
         row.remove();
 }
-
+//sends game request to another user and adds it to the request table
 function sendRequest (user) {
     let button = document.getElementById("button_"+user);
-    //button.innerHTML = "Cancel Request";
     button.disabled = true;
     addRequestDoneTable(user);
     sendWebSocket(JSON.stringify(new Message("send_request", "", myself, user)));
 }
-
+//acccepts a request from another user
 function acceptRequest(user){
     sendWebSocket(JSON.stringify(new Message("accept_request", "", myself, user)));
     opponent = user;
 }
-
-function notifyOnGame(){
-    sendWebSocket(JSON.stringify(new Message("ongame_user", "", myself, "WebSocket")));
-}
-
+//removes the request, after clicking the delete request button and removes the request from the request done table
 function cancelRequest(user){
+
     let button = document.getElementById("button_"+user);
-    //button.innerText = "Send Request";
     button.disabled = false;
-    //button.setAttribute("onclick", "sendRequest(\""+user+"\");");
     deleteRequestDoneTable(user);
     sendWebSocket(JSON.stringify(new Message("cancel_request", "", myself, user)));
 }
-
+//adds a request done to another user to the request done table
 function addRequestDoneTable(user){
 
     let table_body = document.getElementById("userRequestsDone");
@@ -295,8 +274,7 @@ function addRequestDoneTable(user){
     tr.setAttribute("id", "cancel_"+user);
     table_body.appendChild(tr);
 }
-
-
+//adds a request to the request table
 function addReqTable(user) {
     let table_body = document.getElementById("userRequests");
 
@@ -319,71 +297,3 @@ function addReqTable(user) {
     table_body.appendChild(tr);
 }
 
-function moveUser(user){
-
-    let searchedRow = document.getElementById("searched_" + user);
-    searchedRow.remove();
-    addUserTable(user);
-}
-
-function findUser(){
-
-    /*if(user == myself)
-        return;
-    */
-
-    if(document.getElementById("userSearch").textContent == myself)
-        return;
-
-    let user = document.getElementById("userSearch").textContent;
-
-    let table = document.createElement("table");
-    table.setAttribute("id", "searchedUser");
-
-    document.getElementById("search-container").appendChild(table);
-    let tr = document.createElement("tr");
-    tr.setAttribute("id", "searched_"+user);
-    table.appendChild(tr);
-    /*
-    if(exists == "false")
-    {
-        let span = document.createElement("span");
-        tr.appendChild(span);
-        span.innerHTML = "No user with this username";
-        return;
-    }*/
-
-    let td_username = tr.appendChild(document.createElement('td'));
-    let td_status = tr.appendChild(document.createElement('td'));
-    let span = td_status.appendChild(document.createElement("span"));
-    let img = span.appendChild(document.createElement("img"));
-    img.setAttribute("class", "icon");
-    tr.appendChild(img);
-
-    td_username.innerHTML = user;
-
-    if(document.getElementById(user) == null && online_users.includes(user))
-    {
-        let td_button = tr.appendChild(document.createElement('td'));
-        let button = td_button.appendChild(document.createElement("button"));
-        button.setAttribute("type","button");
-        button.setAttribute("id", "button_"+user);
-        button.setAttribute("value","sendRequest");
-        button.setAttribute("class","buttonRequest");
-        button.setAttribute("onclick", "moveUser(\""+user+"\");");
-    }
-
-    if(online_users.includes(user)) {
-        td_status.innerHTML = "Online";
-        img.setAttribute("src", "./images/online-icon.png");
-    }
-    else if(ongame_users.includes(user)) {
-        td_status.innerHTML = "Gaming";
-        img.setAttribute("src", "./images/ongame-icon.png");
-    }
-    else{
-        td_status.innerHTML = "Offline";
-        img.setAttribute("src", "./images/offline-icon.png");
-    }
-
-}

@@ -25,11 +25,11 @@ public class HomeServlet extends HttpServlet {
 
         HttpSession session = request.getSession();
 
-        if(request.getParameter("loginButton") != null)
+        if(request.getParameter("loginButton") != null) //login button clicked
         {
             User user = db.isLogin(username, password);
 
-            if(user == null)
+            if(user == null) // not found a corresponding user/password into the db, notifies to user
             {
                 PrintWriter out = response.getWriter();
                 out.println("<script type=\"text/javascript\">");
@@ -37,15 +37,14 @@ public class HomeServlet extends HttpServlet {
                 out.println("document.location.href='./index.jsp';");
                 out.println("</script>");
                 out.close();
-
             }
-            else
+            else //user found, redirect to the main page
             {
                 session.setAttribute("logUser", user);
                 Utils.goTo("chooseOpponent.jsp", request, response);
             }
-        }else{ //registration part
-            if(db.usernameAlreadyUsed(username))
+        }else{ //registration button clicked
+            if(db.usernameAlreadyUsed(username)) //username already existing, notifies to user
             {
                 //response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 PrintWriter out = response.getWriter();
@@ -55,7 +54,7 @@ public class HomeServlet extends HttpServlet {
                 out.println("</script>");
                 out.close();
             }
-            else
+            else //registation done, notifies to user
             {
                 //response.setStatus(HttpServletResponse.SC_NO_CONTENT);
                 PrintWriter out = response.getWriter();

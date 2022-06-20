@@ -28,10 +28,10 @@ public class UpdatePointsServlet extends HttpServlet {
         String lose_points = request.getParameter("l_ships");
         KeyValueDB db = KeyValueDB.getInstance();
         int points = user.getPoints();
-
+        //updates the points of the winner user
         if(user.getUsername().equals(winner)) {
             points += 10;
-        }else{
+        }else{ //updates the points of the loser
             if((points - Integer.parseInt(lose_points)) > 0)
                 points -= Integer.parseInt(lose_points);
             else
@@ -40,8 +40,6 @@ public class UpdatePointsServlet extends HttpServlet {
         db.updatePoints(user.getUsername(), points);
         user.setPoints(points);
         session.setAttribute("logUser", user);
-
-        //response.sendRedirect("main.jsp");
         goToPage("chooseOpponent.jsp", request, response);
     }
 

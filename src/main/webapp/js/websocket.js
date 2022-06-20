@@ -1,4 +1,4 @@
-class Message {
+class Message { //message exchanged within the web socket
     constructor(type, data, sender, receiver) {
         this.type = type; // Type of the message, explain the content of the message (or type of error)
         this.data = data; // Data contained in the message, can be an object

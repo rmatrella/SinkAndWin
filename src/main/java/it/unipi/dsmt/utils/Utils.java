@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class Utils {
-
+    //to redirect to a specific page
     public static void goTo(String location, HttpServletRequest request, HttpServletResponse response)
     {
         RequestDispatcher reqDispatcher  = request.getRequestDispatcher(location);
@@ -21,7 +21,7 @@ public class Utils {
             e.printStackTrace();
         }
     }
-
+    //returns the rank corresponding to the user points
     public static String ranking(String user)
     {
         KeyValueDB keyValueDB = KeyValueDB.getInstance();
@@ -40,6 +40,7 @@ public class Utils {
         }
     }
 
+    //returns the number of points left to the next rank
     public static int leftPoints(String rank, int points){
         if(rank == "Bronze rank")
             return 100 - points;

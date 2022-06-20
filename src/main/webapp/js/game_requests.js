@@ -2,8 +2,10 @@ let myself;
 let opponent;
 let first;
 
+/*
 let time;
 let timer;
+*/
 
 ws.onmessage = function (event) {
     console.log("message received: "+ event.data);
@@ -11,7 +13,6 @@ ws.onmessage = function (event) {
     let jsonString = JSON.parse(event.data);
     let type = jsonString.type;
     let data = jsonString.data;
-    let sender = jsonString.sender;
 
     switch (type){
 
@@ -20,19 +21,19 @@ ws.onmessage = function (event) {
             showMoveMsg(7);
             break;
 
-        case "game_move":
+        case "game_move": //receiving of a game move
             checkReply(data);
             break;
 
-        case "move_reply":
+        case "move_reply": //reply to a move (hit, missed, hit and sunk)
             receiveReply(data);
             break;
 
-        case "surrender":
+        case "surrender": //surrender of the opponent
             showMoveMsg(6);
             break;
 
-        case "opponent_disconnected":
+        case "opponent_disconnected": //opponent disconnected
             showMoveMsg(7);
             break;
 
@@ -41,11 +42,12 @@ ws.onmessage = function (event) {
     }
 }
 
+//registration of the user after starting the game
 function registerUser () {
     myself = document.getElementById("loggedUsername").textContent;
     opponent = document.getElementById("opponentUsername").textContent;
     first = document.getElementById("firstTurn").textContent;
-    notifyOnGame();
+    notifyOnGame(); //notifies he is on game
     setUp();
 }
 

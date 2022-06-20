@@ -30,14 +30,15 @@ public class AccessFilter implements Filter {
 
         if ((username != null) && (password != null) &&
                 (username.length() >= 2) && (password.length() >= 2) &&
-                ((request.getParameter("loginButton") != null) || (request.getParameter("registerButton") != null)))
+                ((request.getParameter("loginButton") != null) || (request.getParameter("registerButton") != null))) //username and password not null,
+                                                                                                                        // with length more or equal to 2 and clicked one of the two buttons
         {
             // Only the first time i need to do the login process
             chain.doFilter(req, resp);
         }
         else if (session.getAttribute("loggedUser") != null)
         {
-            Utils.goTo("chooseGame.jsp", request, response);
+            Utils.goTo("chooseOpponent.jsp", request, response);
         }
         else
         {

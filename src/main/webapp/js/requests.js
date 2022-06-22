@@ -20,6 +20,10 @@ ws.onmessage = function (event) {
 
     switch (type){
 
+        case "info":
+            console.log(data);
+            break;
+
         case "user_list":  //receiving of the online users list
             shuffle(data);
             for(let i=0; i<data.length; i++){ //inserting online users into the array

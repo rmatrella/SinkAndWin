@@ -16,6 +16,10 @@ ws.onmessage = function (event) {
 
     switch (type){
 
+        case "info":
+            console.log(data);
+            break;
+
         case "error":
             console.log(data);
             showMoveMsg(7);

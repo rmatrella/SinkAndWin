@@ -36,17 +36,14 @@ init(_Args) ->
 handle_call({add, Username}, _From, {List}) ->
   OnlineUsersList = List ++ [Username],
   io:format("Online users : ~p\n", [OnlineUsersList]),
-  io:format("list users : ~p\n", [List]),
   {reply, List, {OnlineUsersList}};
 
 handle_call({delete, Username}, _From, {List}) ->
   OnlineUsersList = lists:delete(Username, List),
   io:format("Online users : ~p\n", [OnlineUsersList]),
-  io:format("list users : ~p\n", [List]),
   {reply, OnlineUsersList, {OnlineUsersList}};
 
 handle_call(get, _From, {List}) ->
-  io:format("list users : ~p\n", [List]),
   {reply, List, {List}}.
 
 handle_cast(stop, _State) ->

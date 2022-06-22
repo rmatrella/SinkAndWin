@@ -14,11 +14,9 @@
 
 %% called when the request is received
 init(Req, State) ->
-  io:format("Inside the init/2 callback.\n", []),
   {cowboy_websocket, Req, State, #{idle_timeout => infinity}}.
 
 websocket_init(State) ->
-  io:format("Inside the websocket_init callback.\n", []),
   io:format("PID of Websocket server is ~p. ~n", [self()]),
   {[{text, jsx:encode(#{<<"type">> => <<"info">>,
     <<"sender">> => <<"WebSocket">>,
@@ -50,7 +48,7 @@ websocket_handle({text, Frame}, State) ->
           NewState = State
       end;
     add_online ->
-      PID = process_info(self(), registered_name),
+      PID = process_info(self(), registered_name), %%verify if the process is registered
       if
         PID == [] -> %% this means that the process is not registered, so the user is not logged in
           Response = jsx:encode(#{<<"type">> => <<"error">>,
@@ -163,9 +161,3 @@ terminate (TerminateReason, _Req, {surrender}) ->
   Username = element(2, erlang:process_info(self(), registered_name)),
    io:format("*** Connection with ~p closed\n", [Username]),
    sinkandwin_server ! {delUser, Username}.
-
-%%terminate (TerminateReason, _Req, {}) ->
-%%  io:format("*** Termination: ~p\n", [TerminateReason]),
-%%  Username = element(2, erlang:process_info(self(), registered_name)),
-%%  sinkandwin_server ! {delUser, Username},
-%%  io:format("*** Process: ~p\n", [Username]).

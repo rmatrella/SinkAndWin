@@ -25,8 +25,6 @@ main_loop() ->
     {addUser, Username} ->
       OnlineUsersList = gen_server_online_users:add_user(Username),
       notify_all({addUser,Username}, OnlineUsersList),
-      %%NewListUsers = OnlineUsersList ++ [Username], %% or lists:append(OnlineUsersList, [Username])
-      %%%NewListUsers = online_users:add_users(Username),
       io:format("Online users : ~p\n", [OnlineUsersList]),
       main_loop();
     {getUser, Username} ->
@@ -41,7 +39,6 @@ main_loop() ->
       main_loop();
     {delUser, Username} ->
       OnlineUsersList = gen_server_online_users:delete_user(Username),
-      %NewOnGameUserList = lists:delete(Username, OnGameUserList),
       notify_all({delUser, Username}, OnlineUsersList),
       io:format("Online users : ~p\n", [OnlineUsersList]),
       main_loop();

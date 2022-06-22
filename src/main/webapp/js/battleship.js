@@ -2,20 +2,19 @@
 // il cambio di turni e fasi
 // gli eventi principali
 
-// Indica il turno di gioco. Se dispari, giocatore 1 di turno
-let turn;
+let turn; //if odd it's the challenges turn, if even it's the challenged turn
 let move;
-let time_left; // istante d'inizio del timer
-let timer_id;
-let missed_turn = 0;
+let time_left; // time left to the timer
+let timer_id; //timer id of the turn timer
+let missed_turn = 0; //number of missed consequence turns
 let game_ended = false;
 let ships_left = 8;
 
-// Array di oggetti che indicano lo stato della singola cella della battaglia
-// Se lo stato è 0 la cella è vuota
-// Se lo stato è 1 sulla cella c'è una nave
-// Se lo stato è 2 sulla cella c'è una nave colpita
-// Se lo stato è 3 indice mancato
+// Array for keep track of the cell status
+// 0 empty cell
+// 1 cell with ship (only in my_grid)
+// 2 hit ship
+// 3 missed cell (hitted cell without ship)
 let my_grid = [];
 let opponent_grid = [];
 
@@ -23,14 +22,15 @@ let opponent_grid = [];
 // Crea le griglie di entrambi i giocatori
 createGrids(100);
 
+//change the turn paragraph on the page
 function setTurn(){
     let p = document.getElementById("turn");
-    if((turn % 2 != 0 && first=="true") || (turn % 2 == 0 && first=="false")) { //is not my turn
+    if((turn % 2 != 0 && first=="true") || (turn % 2 == 0 && first=="false")) { //is my turn
         p.innerHTML = "It's your turn";
-        setTurnTimer();
+        setTurnTimer(); //starts the timer of the turn
         return;
     }
-    else{
+    else{ //is not my turn
         p.innerHTML = opponent+"'s turn";
         return;
     }
@@ -39,7 +39,6 @@ function setTurn(){
 function setTurnTimer(){
     time_left = 30;
     timer_id = setInterval(updateTimer, 1000);
-
 }
 
 function updateTimer(){
@@ -53,29 +52,27 @@ function updateTimer(){
             timer.innerHTML = "0:" + time_left;
     }
     else {
-        clearInterval(timer_id);
+        clearInterval(timer_id); //if the timer expired i reset the timer
         timer.innerHTML="";
-        move = Math.floor(Math.random() * 99).toString();
+        move = Math.floor(Math.random() * 99).toString(); //a random move is generate
         missed_turn ++;
         if(missed_turn == 3)
-            surrender();
+            surrender(); //if i skipped 2 turns i lose the game
         else {
             temporaryDiv("TIME UP!\n Random move: " + move, 1000);
-            waitForSocketConnection(ws, sendMove(move));
+            waitForSocketConnection(ws, sendMove(move)); //send the random move
         }
     }
 }
 
-// Funzione per creare 2 griglie array per la battaglia navale
-// n è il numero di celle totali (default 100)
 function createGrids(n) {
-    for (let x = 0; x < n; x++) {
+    for (let x = 0; x < n; x++) { //set all the cell grids to 0 (all is empty)
         my_grid[x] = 0;
         opponent_grid[x] = 0;
     }
 }
 
-// controlla la risoluzione dello schermo e setta il background adeguato
+// check screen resolution and set the proper background image
 function setBackground(){
     let height = window.screen.height;
     let width = window.screen.width;
@@ -86,7 +83,7 @@ function setBackground(){
 
 function setUp() {
     temporaryDiv("Game started with "+ opponent, 1500);
-    drawTable(1);
+    drawTable(1); //draw table
     drawTable(2);
 
     setShip(5);
@@ -102,10 +99,8 @@ function setUp() {
     setTurn();
 }
 
-// funzione che disegna le tabelle:
-// mode 0 -> disegna una tabella per il posizionamento
-// mode 1 -> una ridotta come reminder della propria griglia
-// mode 2 -> disegna una tabella per colpire
+// mode 1 -> draw small grid of my battleground
+// mode 2 -> draw grid of opponent's battleground
 function drawTable(mode) {
 
     let container = document.getElementById("grids");
@@ -114,16 +109,13 @@ function drawTable(mode) {
     let table = document.createElement("table");
     table.setAttribute("id", "active_table");
     table.setAttribute("class", "grid");
-    // imposta il nome del giocatore nell'intestazione
 
     for (let i = 0; i < 10; i++) {
         row = table.insertRow();
-
-        for (let j = 0; j < 10; j++) {
+        for (let j = 0; j < 10; j++) { //add cells of the grid to the page (with the corresponding id)
             let cell_number = (i*10+j);
             cell = row.insertCell();
             cell.setAttribute("id", cell_number.toString());
-
             switch (mode) {
                 case 1:
                     if (my_grid[cell_number] == 0)
@@ -135,7 +127,6 @@ function drawTable(mode) {
                     else if  (my_grid[cell_number] == 3)
                         cell.setAttribute("class", "missed");
                     break;
-                // disegna la griglia dell'avversario per colpire
                 case 2:
                     if (opponent_grid[cell_number] == 0 || opponent_grid[cell_number] == 1) {
                         cell.setAttribute("class", "unknown");
@@ -150,7 +141,7 @@ function drawTable(mode) {
         }
     }
 
-    // miniaturizza la tabella se mode = 1
+    // set the class to draw it smaller
     if (mode == 1)
         table.setAttribute("class", "miniature");
 
@@ -161,22 +152,25 @@ function drawTable(mode) {
     container.appendChild(new_div);
 }
 
+//test if the ship can be set vertically
 function test_vert(cell, size){
     let row = Math.floor(cell/10);
     let col = cell % 10;
 
     let test = true;
+    //check position going down
+    //check if the starting cell is empty and if the ship dimension fit in the grid
     if(row+size-1 < 10 && (row==0 || my_grid[cell-10]==0) &&
         (row==9 || my_grid[cell+size*10]==0)){
-        for(let i=cell-1; i<=cell+1+(size-1)*10; i++){
+        for(let i=cell-1; i<=cell+1+(size-1)*10; i++){ //check the rectangular along the ship position
             if(Math.floor(i/10)<row){
                 continue;
             }
-            if(my_grid[i]==1) {
+            if(my_grid[i]==1) { // if i found a 1 i can't set the ship
                 test = false;
                 break;
             }
-            if(i%10==(col+1)%10)
+            if(i%10==(col+1)%10) //jump to the next row
                 i=i+9-size;
         }
     } else {
@@ -186,6 +180,8 @@ function test_vert(cell, size){
         return 1;
     }
 
+    //if the prev test failed, check position going up
+    //check if the starting cell is empty and if the ship dimension fit in the grid
     test = true;
     if(row-size+1>0 && (row==0 || my_grid[cell-10*size]==0) &&
         (row==9 || my_grid[cell+30]==0)){
@@ -210,10 +206,13 @@ function test_vert(cell, size){
     return 0;
 }
 
+//test if the ship can be set horizontally
 function test_hor(cell, size){
     let col = cell % 10;
 
     let test = true;
+    //check position going right
+    //check if the starting cell is empty and if the ship dimension fit in the grid
     if(col+size-1 < 10 && (col==0 || my_grid[cell-1]==0) &&
         (col==9 || my_grid[cell+size]==0)){
         for(let i=cell-10; i<=cell+10+size-1; i++){
@@ -235,6 +234,8 @@ function test_hor(cell, size){
         return 1;
     }
 
+    //if the prev test failed, check position going left
+    //check if the starting cell is empty and if the ship dimension fit in the grid
     test = true;
     if(col-size+1>0 && (col==0 || my_grid[cell-size]==0) &&
         (col==9 || my_grid[cell+1]==0)){
@@ -260,16 +261,16 @@ function test_hor(cell, size){
     return 0;
 }
 
+//set a ship with dimension = size
 function setShip(size){
-
     while(true) {
-        let index = Math.floor(Math.random() * 99);
-        let pos = (Math.random() >= 0.5) ? 1 : 0;
+        let index = Math.floor(Math.random() * 99); //starting index
+        let pos = (Math.random() >= 0.5) ? 1 : 0; //if 0 i test horizontally, if 1 vertically
         let test;
-        switch (pos) {
+        switch (pos) { //i try until i found a correct position
             case 0: //horizontal
                 test = test_hor(index, size);
-                if (test == 1) {
+                if (test == 1) { //if 1 set ship going right
                     for (let i = index; i < index + size; i++) {
                         my_grid[i] = 1;
                         let cell = document.getElementById(i.toString());
@@ -277,7 +278,7 @@ function setShip(size){
                     }
                     return;
                 }
-                if (test == -1) {
+                if (test == -1) { //if -1 set ship going left
                     for (let i = index; i > index - size; i--) {
                         my_grid[i] = 1;
                         let cell = document.getElementById(i.toString());
@@ -288,7 +289,7 @@ function setShip(size){
                 break;
             case 1: //vertical
                 test = test_vert(index, size);
-                if (test == 1) {
+                if (test == 1) { //if 1 set ship going up
                     for (let i = index; i < index + size * 10; i = i + 10) {
                         my_grid[i] = 1;
                         let cell = document.getElementById(i.toString());
@@ -296,7 +297,7 @@ function setShip(size){
                     }
                     return;
                 }
-                if (test == -1) {
+                if (test == -1) {   //if 1 set ship going down
                     for (let i = index; i > index - size * 10; i = i - 10) {
                         my_grid[i] = 1;
                         let cell = document.getElementById(i.toString());
@@ -309,40 +310,34 @@ function setShip(size){
     }
 }
 
-
-// cancella le griglie visibili
+// delete grids from page
 function deleteGrids() {
-    //recupera il div contenitore delle griglie
     let tableContainer = document.getElementById("grids");
 
     tableContainer.innerHTML = "";
 }
 
-// funzione per colpire
-// Reminder:
-// Stato = 0 la cella è vuota
-// Stato = 1 sulla cella c'è una nave
-// Stato = 2 sulla cella c'è una nave colpita
-// Stato = 3 indica mancato
+//hit a cell
 function hit(cell) {
     if((turn % 2 == 0 && first=="true") || (turn % 2 != 0 && first=="false")) { //is not my turn
         temporaryDiv("Wait your turn", 1000);
         return;
     }
-    clearInterval(timer_id);
+    clearInterval(timer_id); //clear interval because the player made a move
     let timer = document.getElementById("timer");
     timer.innerHTML="";
     move = cell.id;
     missed_turn = 0;
-    waitForSocketConnection(ws, sendMove(move));
+    waitForSocketConnection(ws, sendMove(move)); //send move
 }
 
+//update opponent's grid based on the received reply
 function receiveReply(reply){
     if(move==null || game_ended == true)
         return;
     let cell = document.getElementById(move);
 
-    switch(reply){
+    switch(reply){ //set the correct value inside the cell and display message
         case "hit":
             opponent_grid[move] = 2;
             cell.setAttribute("class", "hit");
@@ -358,8 +353,8 @@ function receiveReply(reply){
             cell.setAttribute("class", "hit");
             showMoveMsg(2);
             let dim = checkSunkDim(move);
-            let quanti = document.getElementById("dim_"+dim).textContent;
-            document.getElementById("dim_"+dim).textContent = quanti-1;
+            let count = document.getElementById("dim_"+dim).textContent;
+            document.getElementById("dim_"+dim).textContent = count-1;
             break;
         case "win":
             showMoveMsg(3);
@@ -369,7 +364,6 @@ function receiveReply(reply){
     move = null;
 }
 
-// gestisce il cambio turno
 function changeTurn() {
     deleteGrids();
 
@@ -380,6 +374,7 @@ function changeTurn() {
     setTurn();
 }
 
+//check the hitted cell and prepare message reply
 function checkReply(cell){
     let message;
     if(my_grid[cell]==0 || my_grid[cell]==3) {
@@ -390,7 +385,7 @@ function checkReply(cell){
         my_grid[cell]=2;
         let win = 1;
 
-        for(let i=0; i<100; i++){
+        for(let i=0; i<100; i++){ //i check if remain other ships
             if(my_grid[i] == 1) {
                 win = 0;
                 break;
@@ -404,7 +399,7 @@ function checkReply(cell){
             return;
         }
         else {
-            let sunk = checkSunkShip(cell);
+            let sunk = checkSunkShip(cell); //check if i sunk the ship
             if(sunk==1){
                 message = "sunk";
             }
@@ -481,7 +476,7 @@ function checkSunkShip(cell){
     return sunk;
 }
 
-// gestisce il messaggio di feedback dopo un colpo sparato
+// show the correct message based on the reply
 function showMoveMsg(hit){
     if(game_ended == true)
         return;

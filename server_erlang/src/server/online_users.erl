@@ -25,22 +25,22 @@ main_loop() ->
     {addUser, Username} ->
       OnlineUsersList = gen_server_online_users:add_user(Username),
       notify_all({addUser,Username}, OnlineUsersList),
-      io:format("Online users : ~p\n", [OnlineUsersList]),
+      %io:format("Online users : ~p\n", [OnlineUsersList]),
       main_loop();
     {getUser, Username} ->
       OnlineUsersList = gen_server_online_users:get_users(),
-      io:format("Online users : ~p\n", [OnlineUsersList]),
+      %io:format("Online users : ~p\n", [OnlineUsersList]),
       notify_one({online_users, Username}, OnlineUsersList),
       main_loop();
     {onGameUser, Username} ->
       OnlineUsersList = gen_server_online_users:delete_user(Username),
       notify_all({onGameUser, Username}, OnlineUsersList),
-      io:format("On game user : ~p\n", [Username]),
+      %io:format("On game user : ~p\n", [Username]),
       main_loop();
     {delUser, Username} ->
       OnlineUsersList = gen_server_online_users:delete_user(Username),
       notify_all({delUser, Username}, OnlineUsersList),
-      io:format("Online users : ~p\n", [OnlineUsersList]),
+      %io:format("Online users : ~p\n", [OnlineUsersList]),
       main_loop();
     _ -> ok
   end,

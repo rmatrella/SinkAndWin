@@ -17,7 +17,6 @@ init(Req, State) ->
   {cowboy_websocket, Req, State, #{idle_timeout => infinity}}.
 
 websocket_init(State) ->
-  io:format("PID of Websocket server is ~p. ~n", [self()]),
   {[{text, jsx:encode(#{<<"type">> => <<"info">>,
     <<"sender">> => <<"WebSocket">>,
     <<"data">> => <<"Web socket server connection success">>})}], State}.
